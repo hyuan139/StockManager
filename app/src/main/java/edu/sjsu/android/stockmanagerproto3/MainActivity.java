@@ -29,7 +29,13 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
-        if(item.getItemId() == R.id.searchOp){
+        if(item.getItemId() == R.id.homeOp){
+            NavHostFragment navHost = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentContainerView2);
+            assert navHost != null;
+            NavController controller = navHost.getNavController();
+            controller.navigate(R.id.action_global_homeFragment);
+        }
+        else if(item.getItemId() == R.id.searchOp){
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Search");
             builder.setMessage("Last item in list. Continue?");

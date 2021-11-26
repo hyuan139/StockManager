@@ -3,6 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/homeOp"
+        android:icon="@drawable/ic_home"
+        app:showAsAction="always"
+        android:title="back"
+        />
+
+    <item
         android:id="@+id/searchOp"
         android:icon="@drawable/ic_search"
         app:showAsAction="always"

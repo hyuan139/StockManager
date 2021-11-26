@@ -17,5 +17,5 @@
         android:id="@+id/watchFragment"
         android:name="edu.sjsu.android.stockmanagerproto3.WatchFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" /><action android:id="@+id/action_global_homeFragment" app:destination="@id/homeFragment"/>
 </navigation>
