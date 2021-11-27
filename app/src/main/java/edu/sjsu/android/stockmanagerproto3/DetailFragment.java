@@ -4,15 +4,15 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
-import edu.sjsu.android.stockmanagerproto3.databinding.FragmentHomeBinding;
+import edu.sjsu.android.stockmanagerproto3.databinding.FragmentDetailBinding;
 
-public class HomeFragment extends Fragment {
 
-    public HomeFragment() {
+public class DetailFragment extends Fragment {
+
+    public DetailFragment() {
         // Required empty public constructor
     }
 
@@ -25,16 +25,7 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        FragmentHomeBinding binding = FragmentHomeBinding.inflate(getLayoutInflater());
-        binding.searchBtn.setOnClickListener(this::searchBtn);
+        FragmentDetailBinding binding = FragmentDetailBinding.inflate(getLayoutInflater());
         return binding.getRoot();
     }
-
-    public void searchBtn(View v){
-        Toast.makeText(getContext(), "Search initiated", Toast.LENGTH_LONG).show();
-        // send user input data
-        // fetch data
-        // direct user to detail fragment of chosen stock
-    }
-
 }

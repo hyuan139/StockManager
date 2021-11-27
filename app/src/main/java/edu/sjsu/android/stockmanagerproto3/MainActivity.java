@@ -35,14 +35,6 @@ public class MainActivity extends AppCompatActivity {
             NavController controller = navHost.getNavController();
             controller.navigate(R.id.action_global_homeFragment);
         }
-        else if(item.getItemId() == R.id.searchOp){
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Search");
-            builder.setMessage("Last item in list. Continue?");
-            builder.setPositiveButton("Yes",((dialogInterface, i) -> {}));
-            builder.setNegativeButton("No", ((dialogInterface, i) -> {}));
-            builder.create().show();
-        }
         else if(item.getItemId() == R.id.watchlistOp){
             NavHostFragment navHost = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentContainerView2);
             assert navHost != null;
