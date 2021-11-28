@@ -7,6 +7,9 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
 import edu.sjsu.android.stockmanagerproto3.databinding.FragmentHomeBinding;
 
@@ -35,6 +38,8 @@ public class HomeFragment extends Fragment {
         // send user input data
         // fetch data
         // direct user to detail fragment of chosen stock
+        NavController con = Navigation.findNavController(v);
+        con.navigate(R.id.action_homeFragment_to_detailFragment);
     }
 
 }
