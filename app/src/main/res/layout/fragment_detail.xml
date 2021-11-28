@@ -9,7 +9,7 @@
     android:id="@+id/detailFrag">
 
     <LinearLayout
-        android:id="@+id/currDate"
+        android:id="@+id/theDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -18,7 +18,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="PLACEHOLDER DATE"/>
+            android:text="@string/placeholder_date"/>
         <RadioGroup
             android:id="@+id/range"
             android:layout_width="match_parent"
@@ -27,31 +27,31 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Range:"/>
+                android:text="@string/range"/>
             <RadioButton
                 android:id="@+id/oneDay"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="1 Day"
+                android:text="@string/daily"
                 android:checked="true"
                 />
             <RadioButton
                 android:id="@+id/fiveDays"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="5 Days"
+                android:text="@string/fiveDays"
                 />
             <RadioButton
                 android:id="@+id/threeMonths"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="3 Months"
+                android:text="@string/threeMonths"
                 />
             <RadioButton
                 android:id="@+id/maxYears"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Max"
+                android:text="@string/max"
                 />
          </RadioGroup>
         ></LinearLayout>
