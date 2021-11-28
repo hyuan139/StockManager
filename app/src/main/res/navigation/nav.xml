@@ -10,9 +10,6 @@
         android:name="edu.sjsu.android.stockmanagerproto3.HomeFragment"
         android:label="HomeFragment" >
         <action
-            android:id="@+id/action_homeFragment_to_watchFragment"
-            app:destination="@id/watchFragment" />
-        <action
             android:id="@+id/action_homeFragment_to_detailFragment"
             app:destination="@id/detailFragment" />
     </fragment>
@@ -26,5 +23,5 @@
         android:id="@+id/detailFragment"
         android:name="edu.sjsu.android.stockmanagerproto3.DetailFragment"
         android:label="fragment_detail"
-        tools:layout="@layout/fragment_detail" />
+        tools:layout="@layout/fragment_detail" /><action android:id="@+id/action_global_watchFragment" app:destination="@id/watchFragment"/>
 </navigation>

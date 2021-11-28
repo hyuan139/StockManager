@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">StockManagerProto3</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">DETAIL FRAGMENT SUCCESS</string>
+    <string name="stockInfo1">DETAIL FRAGMENT SUCCESS</string>
     <string name="welcome">Welcome to StockManager!</string>
     <string name="info1">-> Enter the ticker in the search box below to view a \n\t\tstock.</string>
     <string name="info2">-> Click the eye icon to navigate to your curated \n\t\twatchlist.</string>

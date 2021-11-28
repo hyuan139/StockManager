@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
             NavHostFragment navHost = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentContainerView2);
             assert navHost != null;
             NavController controller = navHost.getNavController();
-            controller.navigate(R.id.action_homeFragment_to_watchFragment);
+            controller.navigate(R.id.action_global_watchFragment);
         }
         else if(item.getItemId() == R.id.uninstall){
             this.uninstall();

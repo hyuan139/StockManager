@@ -44,7 +44,7 @@ public class HomeFragment extends Fragment {
         Toast.makeText(getContext(), "Search initiated", Toast.LENGTH_LONG).show();
         // send user input data
         // fetch data
-        // direct user to detail fragment of chosen stock
+        // send data to detail fragment; direct user to detail fragment of chosen stock
         NavController con = Navigation.findNavController(v);
         con.navigate(R.id.action_homeFragment_to_detailFragment);
     }
