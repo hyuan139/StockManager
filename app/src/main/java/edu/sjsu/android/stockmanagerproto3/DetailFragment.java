@@ -73,8 +73,7 @@ public class DetailFragment extends Fragment {
             @Override
             public void onValueSelected(Entry e, Highlight h) {
                 float entryPos = e.getX();
-                Toast.makeText(getContext(), "X value: " + entryPos, Toast.LENGTH_SHORT).show();
-                // TODO: SET THE STOCK INFO BASED ON THE ENTRY CLICKED
+                //Toast.makeText(getContext(), "X value: " + entryPos, Toast.LENGTH_SHORT).show();
                 CandleEntry selectedEntry = yValsCandleStick.get((int)entryPos);
                 high.setText(getResources().getString(R.string.highPrice) + "  \t$" + Float.toString(selectedEntry.getHigh()));
                 low.setText(getResources().getString(R.string.lowPrice) + "   \t$" + Float.toString(selectedEntry.getLow()));
@@ -152,4 +151,5 @@ public class DetailFragment extends Fragment {
 
         data = new CandleData(set1);
     }
+
 }
