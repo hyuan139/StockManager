@@ -4,10 +4,12 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
@@ -20,7 +22,12 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.CandleData;
 import com.github.mikephil.charting.data.CandleDataSet;
 import com.github.mikephil.charting.data.CandleEntry;
+import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.formatter.ValueFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.ChartTouchListener;
+import com.github.mikephil.charting.listener.OnChartGestureListener;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -33,6 +40,10 @@ import edu.sjsu.android.stockmanagerproto3.databinding.FragmentDetailBinding;
 public class DetailFragment extends Fragment {
     private CandleStickChart chart;
     private TextView date;
+    private TextView open;
+    private TextView close;
+    private TextView high;
+    private TextView low;
     private RadioGroup theRange;
     private ArrayList<CandleEntry> yValsCandleStick;
     private CandleData data;
@@ -54,7 +65,28 @@ public class DetailFragment extends Fragment {
         chart = binding.stockChart;
         date = binding.theDate;
         theRange = binding.range;
+        open = binding.stockOpen;
+        close = binding.stockClose;
+        high = binding.stockHigh;
+        low = binding.stockLow;
+        chart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+            @Override
+            public void onValueSelected(Entry e, Highlight h) {
+                float entryPos = e.getX();
+                Toast.makeText(getContext(), "X value: " + entryPos, Toast.LENGTH_SHORT).show();
+                // TODO: SET THE STOCK INFO BASED ON THE ENTRY CLICKED
+                CandleEntry selectedEntry = yValsCandleStick.get((int)entryPos);
+                high.setText(getResources().getString(R.string.highPrice) + "  \t$" + Float.toString(selectedEntry.getHigh()));
+                low.setText(getResources().getString(R.string.lowPrice) + "   \t$" + Float.toString(selectedEntry.getLow()));
+                open.setText(getResources().getString(R.string.openPrice) + " \t$" + Float.toString(selectedEntry.getOpen()));
+                close.setText(getResources().getString(R.string.closePrice) + "\t$" + Float.toString(selectedEntry.getClose()));
+            }
 
+            @Override
+            public void onNothingSelected() {
+
+            }
+        });
         setUpChart();
         chart.invalidate();
         return binding.getRoot();

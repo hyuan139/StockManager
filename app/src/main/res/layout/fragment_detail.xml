@@ -73,22 +73,22 @@
             android:id="@+id/stockHigh"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="HIGH PRICE HERE: "/>
+            android:text="@string/highPrice"/>
         <TextView
             android:id="@+id/stockLow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="LOW PRICE HERE: "/>
+            android:text="@string/lowPrice"/>
         <TextView
             android:id="@+id/stockOpen"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="OPEN PRICE HERE: "/>
+            android:text="@string/openPrice"/>
         <TextView
             android:id="@+id/stockClose"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="CLOSE PRICE HERE: "/>
+            android:text="@string/closePrice"/>
         ></LinearLayout>
 
     <com.github.mikephil.charting.charts.CandleStickChart
