@@ -41,7 +41,5 @@ public class WatchFragment extends Fragment {
 
     public void generateData(){
         watchlist = new ArrayList<>();
-        watchlist.add(new Stock("TSLA", "$1999.56"));
-        watchlist.add(new Stock("GME", "$265.50"));
     }
 }

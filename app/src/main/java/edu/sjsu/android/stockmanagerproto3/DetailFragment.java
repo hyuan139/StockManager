@@ -26,6 +26,8 @@ import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+
 import org.json.*;
 import edu.sjsu.android.stockmanagerproto3.databinding.FragmentDetailBinding;
 
@@ -42,10 +44,10 @@ public class DetailFragment extends Fragment {
     private CandleData data;
     private int selectedOption = 0;
     private FragmentDetailBinding binding;
-    private RadioButton oneDay;
-    private RadioButton fiveDays;
-    private RadioButton threeMonths;
-    private RadioButton max;
+    private RadioButton daily;
+    private RadioButton weekly;
+    private RadioButton monthly;
+    private String rawData;
 
     public DetailFragment() {
         // Required empty public constructor
@@ -78,17 +80,15 @@ public class DetailFragment extends Fragment {
         close = binding.stockClose;
         high = binding.stockHigh;
         low = binding.stockLow;
-        oneDay = binding.oneDay;
-        fiveDays = binding.fiveDays;
-        threeMonths = binding.threeMonths;
-        max = binding.maxYears;
+        daily = binding.daily;
+        weekly = binding.weekly;
+        monthly = binding.monthly;
     }
 
     public void setListeners(){
-        oneDay.setOnClickListener(this::checked);
-        fiveDays.setOnClickListener(this::checked);
-        threeMonths.setOnClickListener(this::checked);
-        max.setOnClickListener(this::checked);
+        daily.setOnClickListener(this::checked);
+        weekly.setOnClickListener(this::checked);
+        monthly.setOnClickListener(this::checked);
         chart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
             @Override
             public void onValueSelected(Entry e, Highlight h) {
@@ -108,26 +108,26 @@ public class DetailFragment extends Fragment {
         });
     }
     public void checked(View v){
-        if(oneDay.isChecked()){
+        if(daily.isChecked()){
             Toast.makeText(getContext(), "one day radio button clicked", Toast.LENGTH_SHORT).show();
+            // TODO: ACTUAL ACTION -- redraw graph with values based on checked value
             return;
         }
-        else if(fiveDays.isChecked()){
+        else if(weekly.isChecked()){
             Toast.makeText(getContext(), "five days radio button clicked", Toast.LENGTH_SHORT).show();
+            // TODO: ACTUAL ACTION -- redraw graph with values based on checked value
             return;
         }
-        else if(threeMonths.isChecked()){
+        else if(monthly.isChecked()){
             Toast.makeText(getContext(), "three months radio button clicked", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        else if(max.isChecked()){
-            Toast.makeText(getContext(), "max years radio button clicked", Toast.LENGTH_SHORT).show();
+            // TODO: ACTUAL ACTION -- redraw graph with values based on checked value
             return;
         }
     }
     /**
      * Configure the candlestick chart
      */
+    // (possible) args: date list, stock data in HashMap<Date(String,Stock)>
     public void setUpChart(){
         chart.setDoubleTapToZoomEnabled(false);
         chart.setDrawBorders(true);
@@ -156,6 +156,17 @@ public class DetailFragment extends Fragment {
         generateData();
         chart.setData(data);
     }
+
+    public void fetchRawData(){
+
+        rawData = "";
+    }
+    public HashMap<String, Stock> processedData(){
+
+        return new HashMap<>();
+    }
+
+
 
     public void generateData(){
         yValsCandleStick= new ArrayList<CandleEntry>();

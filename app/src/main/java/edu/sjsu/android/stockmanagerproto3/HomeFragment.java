@@ -12,6 +12,8 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
+import java.net.URI;
+
 import edu.sjsu.android.stockmanagerproto3.databinding.FragmentHomeBinding;
 
 public class HomeFragment extends Fragment {
@@ -45,6 +47,14 @@ public class HomeFragment extends Fragment {
         // send user input data
         // fetch data
         // send data to detail fragment; direct user to detail fragment of chosen stock
+        String url = String.format(StockDataUtil.getURL_V1(), userInput.getText().toString().toUpperCase());
+
+
+
+
+
+        Bundle bundle = new Bundle();
+        bundle.putString("rawdata", url);
         NavController con = Navigation.findNavController(v);
         con.navigate(R.id.action_homeFragment_to_detailFragment);
     }
