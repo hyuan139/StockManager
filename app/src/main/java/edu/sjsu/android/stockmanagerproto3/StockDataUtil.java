@@ -4,7 +4,7 @@ package edu.sjsu.android.stockmanagerproto3;
  * Utility methods to fetch and process stock data from API
  */
 public class StockDataUtil {
-    private static final String KEY = "";
+    private static final String KEY = "5ce41460d7msha29ff32aead49d9p1f6cc1jsnbf8b68a43226";
     private static final String DAILY = "TIME_SERIES_DAILY_ADJUSTED";
     private static final String WEEKLY = "TIME_SERIES_WEEKLY_ADJUSTED";
     private static final String MONTHLY = "TIME_SERIES_MONTHLY_ADJUSTED";
@@ -36,4 +36,9 @@ public class StockDataUtil {
     public static String getURL_V3(){
         return URL_V3;
     }
+
+    public static String getKey(){
+        return KEY;
+    }
+
 }
