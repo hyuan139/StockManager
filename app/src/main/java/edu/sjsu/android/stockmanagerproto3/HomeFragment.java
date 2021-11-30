@@ -19,6 +19,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.ArrayList;
 
 import edu.sjsu.android.stockmanagerproto3.databinding.FragmentHomeBinding;
 import okhttp3.Call;
@@ -63,39 +64,19 @@ public class HomeFragment extends Fragment {
         // send data to detail fragment; direct user to detail fragment of chosen stock
         String url = String.format(StockDataUtil.getURL_V1(), userInput.getText().toString().toUpperCase());
         System.out.println("FETCHING DATA");
-        Request request = new Request.Builder()
-                .url(url)
-                .get()
-                .addHeader("x-rapidapi-host", "alpha-vantage.p.rapidapi.com")
-                .addHeader("x-rapidapi-key", StockDataUtil.getKey())
-                .build();
-       client.newCall(request).enqueue(new Callback() {
-           @Override
-           public void onFailure(@NonNull Call call, @NonNull IOException e) {
-               Toast.makeText(getContext(),"Oops, something occurred. Please make sure the ticker symbol is correct or if you have internet conenction.", Toast.LENGTH_LONG).show();
-               e.printStackTrace();
-           }
-
-           @Override
-           public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                if(response.isSuccessful()){
-                    String result = response.body().string();
-                    try {
-                        JSONObject jsonObject = new JSONObject(result);
-                        String data = jsonObject.getJSONObject("Time Series (Daily)").toString();
-                        System.out.println("LENGTH of data is: " + jsonObject.getJSONObject("Time Series (Daily)").length());
-                        String json = jsonObject.getJSONObject("Time Series (Daily)").toString();
-                        int length = json.length();
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-           }
-       });
-
-
+        StockDataUtil.fetchRawDataInit(url);
+       // String  unprocessedData = StockDataUtil.fetchRawDataInit(url);
+        //String processedData = StockDataUtil.processData(rawData);
+       // ArrayList<String> dates = StockDataUtil.dateList(processedData);
+       // for(String date: dates){
+       //     System.out.println("DATE: " + date);
+      //  }
+        while(true){
+            // check if fetch done before going to detail
+            if(StockDataUtil.getFetchDone()){
+                break;
+            }
+        }
 
         Bundle bundle = new Bundle();
         bundle.putString("rawdata", url);
