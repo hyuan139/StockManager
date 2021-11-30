@@ -4,9 +4,9 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -14,7 +14,6 @@ import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 
 import com.github.mikephil.charting.charts.CandleStickChart;
-import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
@@ -23,17 +22,11 @@ import com.github.mikephil.charting.data.CandleData;
 import com.github.mikephil.charting.data.CandleDataSet;
 import com.github.mikephil.charting.data.CandleEntry;
 import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
-import com.github.mikephil.charting.listener.ChartTouchListener;
-import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
-
+import org.json.*;
 import edu.sjsu.android.stockmanagerproto3.databinding.FragmentDetailBinding;
 
 
@@ -47,6 +40,12 @@ public class DetailFragment extends Fragment {
     private RadioGroup theRange;
     private ArrayList<CandleEntry> yValsCandleStick;
     private CandleData data;
+    private int selectedOption = 0;
+    private FragmentDetailBinding binding;
+    private RadioButton oneDay;
+    private RadioButton fiveDays;
+    private RadioButton threeMonths;
+    private RadioButton max;
 
     public DetailFragment() {
         // Required empty public constructor
@@ -61,7 +60,17 @@ public class DetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        FragmentDetailBinding binding = FragmentDetailBinding.inflate(getLayoutInflater());
+        binding = FragmentDetailBinding.inflate(getLayoutInflater());
+        // initialize the private variables
+        initVars();
+        // set the listeners
+        setListeners();
+        setUpChart();
+        chart.invalidate();
+        return binding.getRoot();
+    }
+
+    public void initVars(){
         chart = binding.stockChart;
         date = binding.theDate;
         theRange = binding.range;
@@ -69,6 +78,17 @@ public class DetailFragment extends Fragment {
         close = binding.stockClose;
         high = binding.stockHigh;
         low = binding.stockLow;
+        oneDay = binding.oneDay;
+        fiveDays = binding.fiveDays;
+        threeMonths = binding.threeMonths;
+        max = binding.maxYears;
+    }
+
+    public void setListeners(){
+        oneDay.setOnClickListener(this::checked);
+        fiveDays.setOnClickListener(this::checked);
+        threeMonths.setOnClickListener(this::checked);
+        max.setOnClickListener(this::checked);
         chart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
             @Override
             public void onValueSelected(Entry e, Highlight h) {
@@ -86,11 +106,25 @@ public class DetailFragment extends Fragment {
 
             }
         });
-        setUpChart();
-        chart.invalidate();
-        return binding.getRoot();
     }
-
+    public void checked(View v){
+        if(oneDay.isChecked()){
+            Toast.makeText(getContext(), "one day radio button clicked", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        else if(fiveDays.isChecked()){
+            Toast.makeText(getContext(), "five days radio button clicked", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        else if(threeMonths.isChecked()){
+            Toast.makeText(getContext(), "three months radio button clicked", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        else if(max.isChecked()){
+            Toast.makeText(getContext(), "max years radio button clicked", Toast.LENGTH_SHORT).show();
+            return;
+        }
+    }
     /**
      * Configure the candlestick chart
      */

@@ -41,7 +41,7 @@ public class HomeFragment extends Fragment {
             Toast.makeText(getContext(), "Please enter a ticker symbol", Toast.LENGTH_LONG).show();
             return;
         }
-        Toast.makeText(getContext(), "Search initiated", Toast.LENGTH_LONG).show();
+        //Toast.makeText(getContext(), "Search initiated", Toast.LENGTH_LONG).show();
         // send user input data
         // fetch data
         // send data to detail fragment; direct user to detail fragment of chosen stock
