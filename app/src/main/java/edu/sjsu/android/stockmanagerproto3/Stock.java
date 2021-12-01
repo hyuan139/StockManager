@@ -10,13 +10,15 @@ public class Stock {
     private String open;
     private String close;
     private String low;
+    private String date;
     private HashMap<String, Stock> stockData;
 
-    public Stock(String high, String low, String open, String close){
+    public Stock(String high, String low, String open, String close, String date){
         this.high = high;
         this.low = low;
         this.open = open;
         this.close = close;
+        this.date = date;
     }
 
     public Stock(HashMap<String, Stock> stockData){
@@ -37,6 +39,10 @@ public class Stock {
 
     public String getClose() {
         return close;
+    }
+
+    public String getDate() {
+        return date;
     }
 
     public HashMap<String, Stock> getStockData(){

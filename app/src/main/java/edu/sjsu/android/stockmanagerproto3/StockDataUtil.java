@@ -34,6 +34,7 @@ public class StockDataUtil {
     private static String SYMBOL = "";
     private static boolean fetchDone = false;
     private static HashMap<String, Stock> stockData = new HashMap<>();
+    private static ArrayList<String> dateKeys = new ArrayList<>();
 
     // initially called when use press find button
     public static void fetchRawDataInit(String url){
@@ -85,16 +86,17 @@ public class StockDataUtil {
 
     public static void processData(String rdata){
         String processed = prepareData(rdata);
-        ArrayList<String> date = dateList(processed);
+        dateKeys = dateList(processed);
         try {
             JSONObject dailyPrices = new JSONObject(rdata);
-            for(int i = 0; i < date.size(); i++){
+            for(int i = 0; i < dateKeys.size(); i++){
                 // public Stock(String high, String low, String open, String close){
-                stockData.put(date.get(i), new Stock(
-                        dailyPrices.getJSONObject(date.get(i)).getString(HIGH),
-                        dailyPrices.getJSONObject(date.get(i)).getString(LOW),
-                        dailyPrices.getJSONObject(date.get(i)).getString(OPEN),
-                        dailyPrices.getJSONObject(date.get(i)).getString(CLOSE)
+                stockData.put(dateKeys.get(i), new Stock(
+                        dailyPrices.getJSONObject(dateKeys.get(i)).getString(HIGH),
+                        dailyPrices.getJSONObject(dateKeys.get(i)).getString(LOW),
+                        dailyPrices.getJSONObject(dateKeys.get(i)).getString(OPEN),
+                        dailyPrices.getJSONObject(dateKeys.get(i)).getString(CLOSE),
+                        dateKeys.get(i)
                         ));
                 //System.out.println("High: " + dailyPrices.getJSONObject(date.get(i)).getString(HIGH));
                 //System.out.println("Open: " + dailyPrices.getJSONObject(date.get(i)).getString(OPEN));
@@ -168,5 +170,9 @@ public class StockDataUtil {
 
     public static HashMap<String, Stock> getStockData() {
         return stockData;
+    }
+
+    public static ArrayList<String> getDateKeys(){
+        return dateKeys;
     }
 }

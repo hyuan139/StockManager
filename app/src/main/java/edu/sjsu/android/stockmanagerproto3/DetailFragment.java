@@ -2,7 +2,6 @@ package edu.sjsu.android.stockmanagerproto3;
 
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +11,6 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
 import com.github.mikephil.charting.charts.CandleStickChart;
@@ -30,7 +28,6 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.json.*;
 import edu.sjsu.android.stockmanagerproto3.databinding.FragmentDetailBinding;
 
 
@@ -42,7 +39,7 @@ public class DetailFragment extends Fragment {
     private TextView high;
     private TextView low;
     private RadioGroup theRange;
-    private ArrayList<CandleEntry> yValsCandleStick;
+    private ArrayList<CandleEntry> yValues;
     private CandleData data;
     private int selectedOption = 0;
     private FragmentDetailBinding binding;
@@ -50,6 +47,8 @@ public class DetailFragment extends Fragment {
     private RadioButton weekly;
     private RadioButton monthly;
     private String rawData;
+    private HashMap<String, Stock> stockData;
+    private ArrayList<String> dateKeys;
 
     public DetailFragment() {
         // Required empty public constructor
@@ -97,11 +96,14 @@ public class DetailFragment extends Fragment {
             public void onValueSelected(Entry e, Highlight h) {
                 float entryPos = e.getX();
                 //Toast.makeText(getContext(), "X value: " + entryPos, Toast.LENGTH_SHORT).show();
-                CandleEntry selectedEntry = yValsCandleStick.get((int)entryPos);
-                high.setText(getResources().getString(R.string.highPrice) + "  \t$" + Float.toString(selectedEntry.getHigh()));
-                low.setText(getResources().getString(R.string.lowPrice) + "   \t$" + Float.toString(selectedEntry.getLow()));
-                open.setText(getResources().getString(R.string.openPrice) + " \t$" + Float.toString(selectedEntry.getOpen()));
-                close.setText(getResources().getString(R.string.closePrice) + "\t$" + Float.toString(selectedEntry.getClose()));
+
+                if(entryPos < yValues.size()){
+                    CandleEntry selectedEntry = yValues.get((int)entryPos);
+                    high.setText(getResources().getString(R.string.highPrice) + "  \t$" + Float.toString(selectedEntry.getHigh()));
+                    low.setText(getResources().getString(R.string.lowPrice) + "   \t$" + Float.toString(selectedEntry.getLow()));
+                    open.setText(getResources().getString(R.string.openPrice) + " \t$" + Float.toString(selectedEntry.getOpen()));
+                    close.setText(getResources().getString(R.string.closePrice) + "\t$" + Float.toString(selectedEntry.getClose()));
+                }
             }
 
             @Override
@@ -133,6 +135,7 @@ public class DetailFragment extends Fragment {
     // (possible) args: date list, stock data in HashMap<Date(String,Stock)>
     public void setUpChart(){
         chart.setDoubleTapToZoomEnabled(false);
+        chart.setPinchZoom(false); // for now
         chart.setDrawBorders(true);
         chart.setBorderColor(getResources().getColor(R.color.teal_700));
         chart.setBackgroundColor(getResources().getColor(R.color.black));
@@ -162,21 +165,24 @@ public class DetailFragment extends Fragment {
 
 
     public void generateData(){
-        yValsCandleStick= new ArrayList<CandleEntry>();
-        yValsCandleStick.add(new CandleEntry(0, 225.0f, 219.84f, 224.94f, 221.07f));
-        yValsCandleStick.add(new CandleEntry(1, 228.35f, 222.57f, 223.52f, 226.41f));
-        yValsCandleStick.add(new CandleEntry(2, 226.84f,  222.52f, 225.75f, 223.84f));
-        yValsCandleStick.add(new CandleEntry(3, 222.95f, 217.27f, 222.15f, 217.88f));
-        yValsCandleStick.add(new CandleEntry(4, 225.0f, 219.84f, 224.94f, 221.07f));
-        yValsCandleStick.add(new CandleEntry(5, 228.35f, 222.57f, 223.52f, 226.41f));
-        yValsCandleStick.add(new CandleEntry(6, 226.84f,  222.52f, 225.75f, 223.84f));
-        yValsCandleStick.add(new CandleEntry(7, 222.95f, 217.27f, 222.15f, 217.88f));
-        yValsCandleStick.add(new CandleEntry(8, 225.0f, 219.84f, 224.94f, 221.07f));
-        yValsCandleStick.add(new CandleEntry(9, 228.35f, 222.57f, 223.52f, 226.41f));
-        yValsCandleStick.add(new CandleEntry(10, 226.84f,  222.52f, 225.75f, 223.84f));
-        yValsCandleStick.add(new CandleEntry(11, 222.95f, 217.27f, 222.15f, 217.88f));
+        yValues = new ArrayList<>();
+        //yValues.add(new CandleEntry(0, 225.0f, 219.84f, 224.94f, 221.07f));
+        //yValues.add(new CandleEntry(1, 228.35f, 222.57f, 223.52f, 226.41f));
+        //yValues.add(new CandleEntry(2, 226.84f,  222.52f, 225.75f, 223.84f));
+        //yValues.add(new CandleEntry(3, 222.95f, 217.27f, 222.15f, 217.88f));
+        //yValues.add(new CandleEntry(4, 225.0f, 219.84f, 224.94f, 221.07f));
+        //yValues.add(new CandleEntry(5, 228.35f, 222.57f, 223.52f, 226.41f));
+        stockData = StockDataUtil.getStockData();
+        dateKeys = StockDataUtil.getDateKeys();
+        for(int i = 0; i < stockData.size(); i++){
+            // CandleEntry(x, high, low, open, close);
+            yValues.add(new CandleEntry(i, Float.parseFloat(stockData.get(dateKeys.get(i)).getHigh())
+                    , Float.parseFloat(stockData.get(dateKeys.get(i)).getLow())
+                    , Float.parseFloat(stockData.get(dateKeys.get(i)).getOpen())
+                    , Float.parseFloat(stockData.get(dateKeys.get(i)).getClose())));
+        }
 
-        CandleDataSet set1 = new CandleDataSet(yValsCandleStick, "DataSet 1");
+        CandleDataSet set1 = new CandleDataSet(yValues, "DataSet 1");
         set1.setColor(Color.rgb(80, 80, 80));
         set1.setShadowColor(getResources().getColor(R.color.teal_200));
         set1.setShadowWidth(0.8f);
