@@ -8,7 +8,7 @@
     <string name="searchInput">Search:</string>
     <string name="ticker">Enter ticker symbol name</string>
     <string name="find">Find</string>
-    <string name="placeholder_date">PLACEHOLDER DATE</string>
+    <string name="date">Last Accessed: </string>
     <string name="range">Range:</string>
     <string name="daily">Daily</string>
     <string name="fiveDays">Weekly</string>
