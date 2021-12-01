@@ -19,7 +19,9 @@
             android:id="@+id/theDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/date"/>
+            android:text="@string/date"
+            android:textStyle="bold"
+            android:textColor="@color/black"/>
         <RadioGroup
             android:id="@+id/range"
             android:layout_width="match_parent"
@@ -62,32 +64,39 @@
             android:id="@+id/stockSymbol"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text=""/>
+            android:text=""
+            android:textColor="@color/black"
+            android:textStyle="bold"/>
         <TextView
             android:id="@+id/dateAtPrice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text=""/>
+            android:text=""
+            android:textColor="@color/black"/>
         <TextView
             android:id="@+id/stockHigh"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/highPrice"/>
+            android:text="@string/highPrice"
+            android:textColor="@color/black"/>
         <TextView
             android:id="@+id/stockLow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/lowPrice"/>
+            android:text="@string/lowPrice"
+            android:textColor="@color/black"/>
         <TextView
             android:id="@+id/stockOpen"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/openPrice"/>
+            android:text="@string/openPrice"
+            android:textColor="@color/black"/>
         <TextView
             android:id="@+id/stockClose"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/closePrice"/>
+            android:text="@string/closePrice"
+            android:textColor="@color/black"/>
         ></LinearLayout>
 
     <com.github.mikephil.charting.charts.CandleStickChart

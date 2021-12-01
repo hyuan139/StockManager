@@ -24,6 +24,9 @@ public class StockDataUtil {
     private static final String TIME_SERIES_DAILY = "Time Series (Daily)";
     private static final String TIME_SERIES_WEEKLY = "Weekly Adjusted Time Series";
     private static final String TIMES_SERIES_MONTHLY = "Monthly Adjusted Time Series";
+    private static final String METADATA = "Meta Data";
+    private static final String TICKER = "2. Symbol";
+    private static final String LAST_ACCESSED = "3. Last Refreshed";
     private static final String OPEN = "1. open";
     private static final String HIGH = "2. high";
     private static final String LOW = "3. low";
@@ -31,11 +34,11 @@ public class StockDataUtil {
     private static String URL_V1 = "https://alpha-vantage.p.rapidapi.com/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=%s&outputsize=compact&datatype=json"; // for daily requests
     private static String URL_V2 = "https://alpha-vantage.p.rapidapi.com/query?function=TIME_SERIES_WEEKLY_ADJUSTED&symbol=%s&datatype=json"; // for weekly requests
     private static String URL_V3 = "https://alpha-vantage.p.rapidapi.com/query?symbol=%s&function=TIME_SERIES_MONTHLY_ADJUSTED&datatype=json"; // for weekly requests
-    private static String SYMBOL = "";
     private static boolean fetchDone = false;
     private static HashMap<String, Stock> stockData = new HashMap<>();
     private static ArrayList<String> dateKeys = new ArrayList<>();
     private static ArrayList<String> dateKeys2 = new ArrayList<>(); // same as dateKeys but reversed; used for x-axis
+    private static ArrayList<String> metadata = new ArrayList<>();
 
     // initially called when use press find button
     public static void fetchRawDataInit(String url){
@@ -59,8 +62,10 @@ public class StockDataUtil {
                     try {
                         JSONObject jsonObject = new JSONObject(result);
                         String rawData = jsonObject.getJSONObject(TIME_SERIES_DAILY).toString();
+                        String meta = jsonObject.getJSONObject(METADATA).toString();
                         // process data after response
                         processData(rawData);
+                        processMetaData(meta);
                         fetchDone();
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -83,6 +88,16 @@ public class StockDataUtil {
 
     public static boolean getFetchDone(){
         return fetchDone;
+    }
+
+    public static void processMetaData(String mdata){
+        try {
+            JSONObject meta = new JSONObject(mdata);
+            metadata.add(meta.getString(TICKER).replaceAll("\"","")); // always first element
+            metadata.add(meta.getString(LAST_ACCESSED).replaceAll("\"", "")); // always second element
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void processData(String rdata){
@@ -187,4 +202,9 @@ public class StockDataUtil {
     public static ArrayList<String> getDateKeys2(){
         return dateKeys2;
     }
+
+    public static ArrayList<String> getMetadata(){
+        return metadata;
+    }
+
 }

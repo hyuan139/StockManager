@@ -1,6 +1,7 @@
 package edu.sjsu.android.stockmanagerproto3;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 

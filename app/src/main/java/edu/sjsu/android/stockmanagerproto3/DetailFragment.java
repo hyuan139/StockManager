@@ -51,6 +51,7 @@ public class DetailFragment extends Fragment {
     private String rawData;
     private HashMap<String, Stock> stockData;
     private ArrayList<String> dateKeys;
+    private ArrayList<String> metainfo;
 
     public DetailFragment() {
         // Required empty public constructor
@@ -92,12 +93,14 @@ public class DetailFragment extends Fragment {
         dateAtPrice = binding.dateAtPrice;
         stockData = StockDataUtil.getStockData();
         dateKeys = StockDataUtil.getDateKeys2();
+        metainfo = StockDataUtil.getMetadata();
     }
 
     // Set the text views with data of their respective name
     public void initTextViews(){
         // get from meta info list
-
+        theDate.setText(String.format(getResources().getString(R.string.date), metainfo.get(1))); // date always at position 1
+        stockSymbol.setText(metainfo.get(0)); // symbol/ticker always at position 0
         // date list in order from oldest to recent
         dateAtPrice.setText(dateKeys.get(dateKeys.size()-1));
         high.setText(String.format(getResources().getString(R.string.highPrice), stockData.get(dateKeys.get(dateKeys.size()-1)).getHigh()));

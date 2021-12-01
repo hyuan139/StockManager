@@ -2,6 +2,7 @@ package edu.sjsu.android.stockmanagerproto3;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,7 +60,6 @@ public class HomeFragment extends Fragment {
             return;
         }
         String url = String.format(StockDataUtil.getURL_V1(), userInput.getText().toString().toUpperCase());
-        Toast.makeText(getContext(), "Fetching data. Please wait.", Toast.LENGTH_LONG).show();
         StockDataUtil.fetchRawDataInit(url);
         while(true){
             // check if fetch done before going to detail
