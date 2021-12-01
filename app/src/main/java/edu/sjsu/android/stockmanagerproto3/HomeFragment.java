@@ -58,19 +58,9 @@ public class HomeFragment extends Fragment {
             Toast.makeText(getContext(), "Please enter a ticker symbol", Toast.LENGTH_LONG).show();
             return;
         }
-        //Toast.makeText(getContext(), "Search initiated", Toast.LENGTH_LONG).show();
-        // send user input data
-        // fetch data
-        // send data to detail fragment; direct user to detail fragment of chosen stock
         String url = String.format(StockDataUtil.getURL_V1(), userInput.getText().toString().toUpperCase());
-        System.out.println("FETCHING DATA"); // TODO: ADD TEXT VIEW LATER; ALSO INLCUDE ONE AFTER FETCH IS DONE
+        Toast.makeText(getContext(), "Fetching data. Please wait.", Toast.LENGTH_LONG).show();
         StockDataUtil.fetchRawDataInit(url);
-       // String  unprocessedData = StockDataUtil.fetchRawDataInit(url);
-        //String processedData = StockDataUtil.processData(rawData);
-       // ArrayList<String> dates = StockDataUtil.dateList(processedData);
-       // for(String date: dates){
-       //     System.out.println("DATE: " + date);
-      //  }
         while(true){
             // check if fetch done before going to detail
             if(StockDataUtil.getFetchDone()){

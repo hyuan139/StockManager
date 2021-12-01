@@ -33,11 +33,13 @@ import edu.sjsu.android.stockmanagerproto3.databinding.FragmentDetailBinding;
 
 public class DetailFragment extends Fragment {
     private CandleStickChart chart;
-    private TextView date;
+    private TextView theDate;
     private TextView open;
     private TextView close;
     private TextView high;
     private TextView low;
+    private TextView stockSymbol;
+    private TextView dateAtPrice;
     private RadioGroup theRange;
     private ArrayList<CandleEntry> yValues;
     private CandleData data;
@@ -66,6 +68,7 @@ public class DetailFragment extends Fragment {
         binding = FragmentDetailBinding.inflate(getLayoutInflater());
         // initialize the private variables
         initVars();
+        initTextViews();
         // set the listeners
         setListeners();
         //printHashMapStock();
@@ -76,7 +79,7 @@ public class DetailFragment extends Fragment {
 
     public void initVars(){
         chart = binding.stockChart;
-        date = binding.theDate;
+        theDate = binding.theDate;
         theRange = binding.range;
         open = binding.stockOpen;
         close = binding.stockClose;
@@ -85,6 +88,22 @@ public class DetailFragment extends Fragment {
         daily = binding.daily;
         weekly = binding.weekly;
         monthly = binding.monthly;
+        stockSymbol = binding.stockSymbol;
+        dateAtPrice = binding.dateAtPrice;
+        stockData = StockDataUtil.getStockData();
+        dateKeys = StockDataUtil.getDateKeys2();
+    }
+
+    // Set the text views with data of their respective name
+    public void initTextViews(){
+        // get from meta info list
+
+        // date list in order from oldest to recent
+        dateAtPrice.setText(dateKeys.get(dateKeys.size()-1));
+        high.setText(String.format(getResources().getString(R.string.highPrice), stockData.get(dateKeys.get(dateKeys.size()-1)).getHigh()));
+        low.setText(String.format(getResources().getString(R.string.lowPrice), stockData.get(dateKeys.get(dateKeys.size()-1)).getLow()));
+        open.setText(String.format(getResources().getString(R.string.openPrice), stockData.get(dateKeys.get(dateKeys.size()-1)).getOpen()));
+        close.setText(String.format(getResources().getString(R.string.closePrice), stockData.get(dateKeys.get(dateKeys.size()-1)).getClose()));
     }
 
     public void setListeners(){
@@ -99,10 +118,11 @@ public class DetailFragment extends Fragment {
 
                 if(entryPos < yValues.size()){
                     CandleEntry selectedEntry = yValues.get((int)entryPos);
-                    high.setText(getResources().getString(R.string.highPrice) + "  \t$" + Float.toString(selectedEntry.getHigh()));
-                    low.setText(getResources().getString(R.string.lowPrice) + "   \t$" + Float.toString(selectedEntry.getLow()));
-                    open.setText(getResources().getString(R.string.openPrice) + " \t$" + Float.toString(selectedEntry.getOpen()));
-                    close.setText(getResources().getString(R.string.closePrice) + "\t$" + Float.toString(selectedEntry.getClose()));
+                    high.setText(String.format(getResources().getString(R.string.highPrice), Float.toString(selectedEntry.getHigh())));
+                    low.setText(String.format(getResources().getString(R.string.lowPrice),Float.toString(selectedEntry.getLow())));
+                    open.setText(String.format(getResources().getString(R.string.openPrice),Float.toString(selectedEntry.getOpen())));
+                    close.setText(String.format(getResources().getString(R.string.closePrice),Float.toString(selectedEntry.getClose())));
+                    dateAtPrice.setText(stockData.get(dateKeys.get((int)entryPos)).getDate());
                 }
             }
 
@@ -172,8 +192,8 @@ public class DetailFragment extends Fragment {
         //yValues.add(new CandleEntry(3, 222.95f, 217.27f, 222.15f, 217.88f));
         //yValues.add(new CandleEntry(4, 225.0f, 219.84f, 224.94f, 221.07f));
         //yValues.add(new CandleEntry(5, 228.35f, 222.57f, 223.52f, 226.41f));
-        stockData = StockDataUtil.getStockData();
-        dateKeys = StockDataUtil.getDateKeys();
+        //stockData = StockDataUtil.getStockData();
+        //dateKeys = StockDataUtil.getDateKeys();
         for(int i = 0; i < stockData.size(); i++){
             // CandleEntry(x, high, low, open, close);
             yValues.add(new CandleEntry(i, Float.parseFloat(stockData.get(dateKeys.get(i)).getHigh())

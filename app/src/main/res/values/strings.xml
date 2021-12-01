@@ -14,8 +14,8 @@
     <string name="fiveDays">Weekly</string>
     <string name="threeMonths">Monthly</string>
     <string name="max">Max</string>
-    <string name="highPrice">High price:</string>
-    <string name="lowPrice">Low price:</string>
-    <string name="openPrice">Open price:</string>
-    <string name="closePrice">Close price:</string>
+    <string name="highPrice">High price:  	$%s</string>
+    <string name="lowPrice">Low price:   	$%s</string>
+    <string name="openPrice">Open price: 	$%s</string>
+    <string name="closePrice">Close price:	$%s</string>
 </resources>

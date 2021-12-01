@@ -35,6 +35,7 @@ public class StockDataUtil {
     private static boolean fetchDone = false;
     private static HashMap<String, Stock> stockData = new HashMap<>();
     private static ArrayList<String> dateKeys = new ArrayList<>();
+    private static ArrayList<String> dateKeys2 = new ArrayList<>(); // same as dateKeys but reversed; used for x-axis
 
     // initially called when use press find button
     public static void fetchRawDataInit(String url){
@@ -106,6 +107,7 @@ public class StockDataUtil {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        reverseList(dateKeys);
     }
 
     public static String prepareData(String rawData){
@@ -137,6 +139,12 @@ public class StockDataUtil {
                 list.add(date.substring(0, i));
                 return;
             }
+        }
+    }
+
+    public static void reverseList(ArrayList<String> list){
+        for(int i = list.size()-1; i >= 0; i--){
+            dateKeys2.add(list.get(i));
         }
     }
 
@@ -174,5 +182,9 @@ public class StockDataUtil {
 
     public static ArrayList<String> getDateKeys(){
         return dateKeys;
+    }
+
+    public static ArrayList<String> getDateKeys2(){
+        return dateKeys2;
     }
 }
