@@ -2,6 +2,7 @@ package edu.sjsu.android.stockmanagerproto3;
 
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
 import com.github.mikephil.charting.charts.CandleStickChart;
@@ -67,6 +69,7 @@ public class DetailFragment extends Fragment {
         initVars();
         // set the listeners
         setListeners();
+        //printHashMapStock();
         setUpChart();
         chart.invalidate();
         return binding.getRoot();
@@ -157,16 +160,6 @@ public class DetailFragment extends Fragment {
         chart.setData(data);
     }
 
-    public void fetchRawData(){
-
-        rawData = "";
-    }
-    public HashMap<String, Stock> processedData(){
-
-        return new HashMap<>();
-    }
-
-
 
     public void generateData(){
         yValsCandleStick= new ArrayList<CandleEntry>();
@@ -197,4 +190,11 @@ public class DetailFragment extends Fragment {
         data = new CandleData(set1);
     }
 
+    public static void printHashMapStock(){
+        HashMap<String, Stock> stockData = StockDataUtil.getStockData();
+        for(String key: stockData.keySet()){
+            System.out.println(key + " => " + "HIGH: " + stockData.get(key).getHigh()  + " LOW: " + stockData.get(key).getLow()
+                    + " OPEN: " + stockData.get(key).getOpen() + " CLOSE: " + stockData.get(key).getClose());
+        }
+    }
 }

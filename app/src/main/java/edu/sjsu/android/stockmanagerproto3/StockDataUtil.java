@@ -1,17 +1,11 @@
 package edu.sjsu.android.stockmanagerproto3;
 
-import android.util.Log;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.json.*;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.HashMap;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -39,6 +33,8 @@ public class StockDataUtil {
     private static String URL_V3 = "https://alpha-vantage.p.rapidapi.com/query?symbol=%s&function=TIME_SERIES_MONTHLY_ADJUSTED&datatype=json"; // for weekly requests
     private static String SYMBOL = "";
     private static boolean fetchDone = false;
+    private static HashMap<String, Stock> stockData = new HashMap<>();
+
     // initially called when use press find button
     public static void fetchRawDataInit(String url){
         OkHttpClient client = new OkHttpClient();
@@ -73,7 +69,7 @@ public class StockDataUtil {
         });
     }
 
-    // fetch raw data based on user input
+    // fetch raw data based on user input from Detail Fragment
     public static String fetchRawData(){
 
         return "";
@@ -90,12 +86,23 @@ public class StockDataUtil {
     public static void processData(String rdata){
         String processed = prepareData(rdata);
         ArrayList<String> date = dateList(processed);
-        System.out.println("DATES: ");
-        for(int i = 0; i < date.size(); i++){
-            if(i == 100){
-                break;
+        try {
+            JSONObject dailyPrices = new JSONObject(rdata);
+            for(int i = 0; i < date.size(); i++){
+                // public Stock(String high, String low, String open, String close){
+                stockData.put(date.get(i), new Stock(
+                        dailyPrices.getJSONObject(date.get(i)).getString(HIGH),
+                        dailyPrices.getJSONObject(date.get(i)).getString(LOW),
+                        dailyPrices.getJSONObject(date.get(i)).getString(OPEN),
+                        dailyPrices.getJSONObject(date.get(i)).getString(CLOSE)
+                        ));
+                //System.out.println("High: " + dailyPrices.getJSONObject(date.get(i)).getString(HIGH));
+                //System.out.println("Open: " + dailyPrices.getJSONObject(date.get(i)).getString(OPEN));
+                //System.out.println("Close: " + dailyPrices.getJSONObject(date.get(i)).getString(CLOSE));
+                //System.out.println("Low: " + dailyPrices.getJSONObject(date.get(i)).getString(LOW));
             }
-            System.out.println(date.get(i));
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 
@@ -159,4 +166,7 @@ public class StockDataUtil {
         return WEEKLY;
     }
 
+    public static HashMap<String, Stock> getStockData() {
+        return stockData;
+    }
 }

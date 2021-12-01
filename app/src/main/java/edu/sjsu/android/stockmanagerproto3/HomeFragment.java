@@ -63,7 +63,7 @@ public class HomeFragment extends Fragment {
         // fetch data
         // send data to detail fragment; direct user to detail fragment of chosen stock
         String url = String.format(StockDataUtil.getURL_V1(), userInput.getText().toString().toUpperCase());
-        System.out.println("FETCHING DATA");
+        System.out.println("FETCHING DATA"); // TODO: ADD TEXT VIEW LATER; ALSO INLCUDE ONE AFTER FETCH IS DONE
         StockDataUtil.fetchRawDataInit(url);
        // String  unprocessedData = StockDataUtil.fetchRawDataInit(url);
         //String processedData = StockDataUtil.processData(rawData);
@@ -77,9 +77,6 @@ public class HomeFragment extends Fragment {
                 break;
             }
         }
-
-        Bundle bundle = new Bundle();
-        bundle.putString("rawdata", url);
         NavController con = Navigation.findNavController(v);
         con.navigate(R.id.action_homeFragment_to_detailFragment);
     }
