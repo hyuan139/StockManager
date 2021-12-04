@@ -58,7 +58,6 @@ public class DetailFragment extends Fragment {
     private HashMap<String, Stock> stockData;
     private ArrayList<String> dateKeys;
     private ArrayList<String> metainfo;
-    private TextView requestURL;
 
     public DetailFragment() {
         // Required empty public constructor
@@ -69,15 +68,33 @@ public class DetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentDetailBinding.inflate(getLayoutInflater());
+        Bundle bundle = getArguments();
+        if(bundle != null){
+            String request = bundle.getString("url");
+            StockDataUtil.fetchRawDataInit(request);
+            while(true){
+                // check if fetch done before going to detail
+                if(StockDataUtil.getFetchDone()){
+                    // set back to false
+                    StockDataUtil.setFetchNotDone();
+                    break;
+                }
+            }
+        }
         // initialize the private variables
         initVars();
-        //initTextViews();
         // set the listeners
         setListeners();
-        //printHashMapStock();
-        //setUpChart();
+        initTextViews();
+        setUpChart();
         chart.invalidate();
         return binding.getRoot();
+    }
+
+    @Override
+    public void onDestroy(){
+        resetData();
+        super.onDestroy();
     }
 
     public void initVars(){
@@ -96,7 +113,12 @@ public class DetailFragment extends Fragment {
         stockData = StockDataUtil.getStockData();
         dateKeys = StockDataUtil.getDateKeys2();
         metainfo = StockDataUtil.getMetadata();
-        requestURL = binding.requestURL;
+        System.out.println("INITIAL CALL");
+        System.out.println("--------------------------------");
+        System.out.println("Size of stock data: " + stockData.size());
+        System.out.println("Size of date data: " + dateKeys.size());
+        System.out.println("Size of meta info: " + metainfo.size());
+        System.out.println("--------------------------------");
     }
 
     // Set the text views with data of their respective name
@@ -110,7 +132,14 @@ public class DetailFragment extends Fragment {
         low.setText(String.format(getResources().getString(R.string.lowPrice), stockData.get(dateKeys.get(dateKeys.size()-1)).getLow()));
         open.setText(String.format(getResources().getString(R.string.openPrice), stockData.get(dateKeys.get(dateKeys.size()-1)).getOpen()));
         close.setText(String.format(getResources().getString(R.string.closePrice), stockData.get(dateKeys.get(dateKeys.size()-1)).getClose()));
-        requestURL.setText(StockDataUtil.getTicker_test());
+    }
+
+    public void updateTextViews(){
+        dateAtPrice.setText(dateKeys.get(dateKeys.size()-1));
+        high.setText(String.format(getResources().getString(R.string.highPrice), stockData.get(dateKeys.get(dateKeys.size()-1)).getHigh()));
+        low.setText(String.format(getResources().getString(R.string.lowPrice), stockData.get(dateKeys.get(dateKeys.size()-1)).getLow()));
+        open.setText(String.format(getResources().getString(R.string.openPrice), stockData.get(dateKeys.get(dateKeys.size()-1)).getOpen()));
+        close.setText(String.format(getResources().getString(R.string.closePrice), stockData.get(dateKeys.get(dateKeys.size()-1)).getClose()));
     }
 
     public void setListeners(){
@@ -144,28 +173,77 @@ public class DetailFragment extends Fragment {
         if(daily.isChecked()){
             Toast.makeText(getContext(), "one day radio button clicked", Toast.LENGTH_SHORT).show();
             // TODO: ACTUAL ACTION -- redraw graph with values based on checked value
+            String newURL = String.format(StockDataUtil.getURL_V1(), metainfo.get(0));
             resetData();
+            StockDataUtil.fetchRawData(newURL, StockDataUtil.getTimeSeriesDaily());
+            while(true){
+                if(StockDataUtil.getFetchDone()){
+                    // set back to false
+                    StockDataUtil.setFetchNotDone();
+                    break;
+                }
+            }
+            stockData = StockDataUtil.getStockData();
+            dateKeys = StockDataUtil.getDateKeys2();
+            metainfo = StockDataUtil.getMetadata();
+            System.out.println("--------------------------------");
+            System.out.println("Size of stock data: " + stockData.size());
+            System.out.println("Size of date data: " + dateKeys.size());
+            System.out.println("Size of meta info: " + metainfo.size());
+            System.out.println("--------------------------------");
+            updateTextViews();
+            setUpChart();
             chart.invalidate();
             return;
         }
         else if(weekly.isChecked()){
             Toast.makeText(getContext(), "five days radio button clicked", Toast.LENGTH_SHORT).show();
             // TODO: ACTUAL ACTION -- redraw graph with values based on checked value
+            String newURL = String.format(StockDataUtil.getURL_V2(), metainfo.get(0));
             resetData();
-            // pass ticker, the range
-            //StockDataUtil.fetchRawData();
-            //stockData = StockDataUtil.getStockData();
-            //dateKeys = StockDataUtil.getDateKeys2();
-            //metainfo = StockDataUtil.getMetadata();
-            //setUpChart();
+            StockDataUtil.fetchRawData(newURL, StockDataUtil.getTimeSeriesWeekly());
+            while(true){
+                if(StockDataUtil.getFetchDone()){
+                    // set back to false
+                    StockDataUtil.setFetchNotDone();
+                    break;
+                }
+            }
+            stockData = StockDataUtil.getStockData();
+            dateKeys = StockDataUtil.getDateKeys2();
+            metainfo = StockDataUtil.getMetadata();
+            System.out.println("--------------------------------");
+            System.out.println("Size of stock data: " + stockData.size());
+            System.out.println("Size of date data: " + dateKeys.size());
+            System.out.println("Size of meta info: " + metainfo.size());
+            System.out.println("--------------------------------");
+            updateTextViews();
+            setUpChart();
             chart.invalidate();
             return;
         }
         else if(monthly.isChecked()){
             Toast.makeText(getContext(), "three months radio button clicked", Toast.LENGTH_SHORT).show();
             // TODO: ACTUAL ACTION -- redraw graph with values based on checked value
+            String newURL = String.format(StockDataUtil.getURL_V3(), metainfo.get(0));
             resetData();
-            //setUpChart();
+            StockDataUtil.fetchRawData(newURL, StockDataUtil.getTimesSeriesMonthly());
+            while(true){
+                if(StockDataUtil.getFetchDone()){
+                    // set back to false
+                    StockDataUtil.setFetchNotDone();
+                    break;
+                }
+            }
+            stockData = StockDataUtil.getStockData();
+            dateKeys = StockDataUtil.getDateKeys2();
+            metainfo = StockDataUtil.getMetadata();
+            System.out.println("--------------------------------");
+            System.out.println("Size of stock data: " + stockData.size());
+            System.out.println("Size of meta info: " + metainfo.size());
+            System.out.println("--------------------------------");
+            updateTextViews();
+            setUpChart();
             chart.invalidate();
             return;
         }
@@ -235,6 +313,7 @@ public class DetailFragment extends Fragment {
 
     public void resetData(){
         chart.clearValues();
+        StockDataUtil.clearDataSets();
     }
 
     public static void printHashMapStock(){

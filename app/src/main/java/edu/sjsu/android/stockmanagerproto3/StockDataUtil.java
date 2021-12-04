@@ -18,9 +18,9 @@ import okhttp3.Response;
  */
 public class StockDataUtil {
     private static final String KEY = "5ce41460d7msha29ff32aead49d9p1f6cc1jsnbf8b68a43226";
-    private static final String DAILY = "TIME_SERIES_DAILY_ADJUSTED";
-    private static final String WEEKLY = "TIME_SERIES_WEEKLY_ADJUSTED";
-    private static final String MONTHLY = "TIME_SERIES_MONTHLY_ADJUSTED";
+    private static final String DAILY = "TIME_SERIES_DAILY_ADJUSTED"; // prob not needed, URL covers this
+    private static final String WEEKLY = "TIME_SERIES_WEEKLY_ADJUSTED"; // prob not needed, URL covers this
+    private static final String MONTHLY = "TIME_SERIES_MONTHLY_ADJUSTED"; // prob not needed, URL covers this
     private static final String TIME_SERIES_DAILY = "Time Series (Daily)";
     private static final String TIME_SERIES_WEEKLY = "Weekly Adjusted Time Series";
     private static final String TIMES_SERIES_MONTHLY = "Monthly Adjusted Time Series";
@@ -40,9 +40,6 @@ public class StockDataUtil {
     private static ArrayList<String> dateKeys2 = new ArrayList<>(); // same as dateKeys but reversed; used for x-axis
     private static ArrayList<String> metadata = new ArrayList<>();
     public static String ticker_test = "";
-    public static HashMap<String, String> hashMapTest = new HashMap<>();
-    public static HashMap<String, String> hashMapTest2 = new HashMap<>();
-
 
     // initially called when use press find button
     public static void fetchRawDataInit(String url){
@@ -81,12 +78,47 @@ public class StockDataUtil {
     }
 
     // fetch raw data based on user input from Detail Fragment
-    public static void fetchRawData(){
+    public static void fetchRawData(String url, String timeSeriesType){
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(url)
+                .get()
+                .addHeader("x-rapidapi-host", "alpha-vantage.p.rapidapi.com")
+                .addHeader("x-rapidapi-key", KEY)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                e.printStackTrace();
+            }
 
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                if(response.isSuccessful()){
+                    String result = response.body().string();
+                    try {
+                        JSONObject jsonObject = new JSONObject(result);
+                        String rawData = jsonObject.getJSONObject(timeSeriesType).toString();
+                        String meta = jsonObject.getJSONObject(METADATA).toString();
+                        // process data after response
+                        processData(rawData);
+                        processMetaData(meta);
+                        fetchDone();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }
+        });
     }
 
     public static boolean fetchDone(){
         return fetchDone = true;
+    }
+
+    public static boolean setFetchNotDone(){
+        return fetchDone = false;
     }
 
     public static boolean getFetchDone(){
@@ -96,8 +128,10 @@ public class StockDataUtil {
     public static void processMetaData(String mdata){
         try {
             JSONObject meta = new JSONObject(mdata);
-            metadata.add(meta.getString(TICKER).replaceAll("\"","")); // always first element
-            metadata.add(meta.getString(LAST_ACCESSED).replaceAll("\"", "")); // always second element
+            ArrayList<String> temp = new ArrayList<>();
+            temp.add(meta.getString(TICKER).replaceAll("\"","")); // always first element
+            temp.add(meta.getString(LAST_ACCESSED).replaceAll("\"", "")); // always second element
+            metadata = temp;
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -107,21 +141,19 @@ public class StockDataUtil {
         String processed = prepareData(rdata);
         dateKeys = dateList(processed);
         try {
-            JSONObject dailyPrices = new JSONObject(rdata);
+            JSONObject prices = new JSONObject(rdata);
+            HashMap<String, Stock> temp = new HashMap<>();
             for(int i = 0; i < dateKeys.size(); i++){
                 // public Stock(String high, String low, String open, String close){
-                stockData.put(dateKeys.get(i), new Stock(
-                        dailyPrices.getJSONObject(dateKeys.get(i)).getString(HIGH),
-                        dailyPrices.getJSONObject(dateKeys.get(i)).getString(LOW),
-                        dailyPrices.getJSONObject(dateKeys.get(i)).getString(OPEN),
-                        dailyPrices.getJSONObject(dateKeys.get(i)).getString(CLOSE),
+                temp.put(dateKeys.get(i), new Stock(
+                        prices.getJSONObject(dateKeys.get(i)).getString(HIGH),
+                        prices.getJSONObject(dateKeys.get(i)).getString(LOW),
+                        prices.getJSONObject(dateKeys.get(i)).getString(OPEN),
+                        prices.getJSONObject(dateKeys.get(i)).getString(CLOSE),
                         dateKeys.get(i)
-                        ));
-                //System.out.println("High: " + dailyPrices.getJSONObject(date.get(i)).getString(HIGH));
-                //System.out.println("Open: " + dailyPrices.getJSONObject(date.get(i)).getString(OPEN));
-                //System.out.println("Close: " + dailyPrices.getJSONObject(date.get(i)).getString(CLOSE));
-                //System.out.println("Low: " + dailyPrices.getJSONObject(date.get(i)).getString(LOW));
+                ));
             }
+            stockData = temp;
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -145,8 +177,14 @@ public class StockDataUtil {
     public static ArrayList<String> dateList(String data){
         ArrayList<String> list = new ArrayList<>();
         String[] item = data.split("\\},");
+        int counter = 0;
         for(String val: item){
+            // only add the recent entries (100 max)
+            if(counter >= 100){
+                break;
+            }
             addDate(list, val);
+            counter++;
         }
         return list;
     }
@@ -185,6 +223,10 @@ public class StockDataUtil {
     public static String getDAILY() {
         return DAILY;
     }
+    public static String getMETADATA() {
+        return METADATA;
+    }
+
 
     public static String getMONTHLY() {
         return MONTHLY;
@@ -192,6 +234,42 @@ public class StockDataUtil {
 
     public static String getWEEKLY() {
         return WEEKLY;
+    }
+
+    public static String getTICKER() {
+        return TICKER;
+    }
+
+    public static String getHIGH() {
+        return HIGH;
+    }
+
+    public static String getOPEN() {
+        return OPEN;
+    }
+
+    public static String getCLOSE() {
+        return CLOSE;
+    }
+
+    public static String getLOW() {
+        return LOW;
+    }
+
+    public static String getLastAccessed() {
+        return LAST_ACCESSED;
+    }
+
+    public static String getTimeSeriesDaily(){
+        return TIME_SERIES_DAILY;
+    }
+
+    public static String getTimeSeriesWeekly(){
+        return TIME_SERIES_WEEKLY;
+    }
+
+    public static String getTimesSeriesMonthly(){
+        return TIMES_SERIES_MONTHLY;
     }
 
     public static HashMap<String, Stock> getStockData() {
@@ -210,34 +288,16 @@ public class StockDataUtil {
         return metadata;
     }
 
+    public static void clearDataSets(){
+        stockData.clear();
+        dateKeys.clear();
+        dateKeys2.clear();
+        metadata.clear();
+    }
+
+
     public static void setTicker_test(String ticker){
         ticker_test = ticker;
     }
 
-    // BELOW JUST FOR TESTING PURPOSES
-    public static String getTicker_test(){
-        return ticker_test;
-    }
-
-    public static void setHashMapTest(){
-        hashMapTest.put("1","val1");
-        hashMapTest.put("2","val2");
-        hashMapTest.put("3","val3");
-        hashMapTest.put("4","val4");
-    }
-
-    public static void setHashMapTest2(){
-        hashMapTest.put("5","val5");
-        hashMapTest.put("6","val6");
-        hashMapTest.put("7","val7");
-        hashMapTest.put("8","val8");
-    }
-
-    public static HashMap<String, String> getHashMapTest(){
-        return hashMapTest;
-    }
-
-    public static HashMap<String, String> getHashMapTest2(){
-        return hashMapTest2;
-    }
 }

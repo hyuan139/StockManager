@@ -68,8 +68,10 @@ public class HomeFragment extends Fragment {
                 break;
             }
         }*/
+        Bundle bundle = new Bundle();
+        bundle.putString("url", url);
         NavController con = Navigation.findNavController(v);
-        con.navigate(R.id.action_homeFragment_to_detailFragment);
+        con.navigate(R.id.action_homeFragment_to_detailFragment, bundle);
     }
 
 }
