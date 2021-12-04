@@ -30,27 +30,42 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/range"/>
+                android:text="@string/range"
+                android:layout_weight="1"/>
             <RadioButton
                 android:id="@+id/daily"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/daily"
                 android:checked="true"
+                android:layout_weight="1"
                 />
             <RadioButton
                 android:id="@+id/weekly"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/fiveDays"
+                android:layout_weight="1"
                 />
             <RadioButton
                 android:id="@+id/monthly"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/threeMonths"
+                android:layout_weight="1"
                 />
-         </RadioGroup>
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/watchListAdd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:clickable="true"
+                app:fabSize="mini"
+                android:backgroundTint="@color/cardview_light_background"
+                android:src="@android:drawable/ic_menu_add" />
+        </RadioGroup>
+
         ></LinearLayout>
 
     <LinearLayout
@@ -60,6 +75,13 @@
         android:orientation="vertical"
         android:layout_marginStart="10dp">
 
+        <TextView
+            android:id="@+id/requestURL"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textColor="@color/black"
+            android:textStyle="bold"/>
         <TextView
             android:id="@+id/stockSymbol"
             android:layout_width="wrap_content"
@@ -103,8 +125,6 @@
         android:id="@+id/stockChart"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="15dp" />
-
-
+        android:layout_marginTop="15dp"></com.github.mikephil.charting.charts.CandleStickChart>
 
 </LinearLayout>

@@ -39,6 +39,10 @@ public class StockDataUtil {
     private static ArrayList<String> dateKeys = new ArrayList<>();
     private static ArrayList<String> dateKeys2 = new ArrayList<>(); // same as dateKeys but reversed; used for x-axis
     private static ArrayList<String> metadata = new ArrayList<>();
+    public static String ticker_test = "";
+    public static HashMap<String, String> hashMapTest = new HashMap<>();
+    public static HashMap<String, String> hashMapTest2 = new HashMap<>();
+
 
     // initially called when use press find button
     public static void fetchRawDataInit(String url){
@@ -77,9 +81,8 @@ public class StockDataUtil {
     }
 
     // fetch raw data based on user input from Detail Fragment
-    public static String fetchRawData(){
+    public static void fetchRawData(){
 
-        return "";
     }
 
     public static boolean fetchDone(){
@@ -207,4 +210,34 @@ public class StockDataUtil {
         return metadata;
     }
 
+    public static void setTicker_test(String ticker){
+        ticker_test = ticker;
+    }
+
+    // BELOW JUST FOR TESTING PURPOSES
+    public static String getTicker_test(){
+        return ticker_test;
+    }
+
+    public static void setHashMapTest(){
+        hashMapTest.put("1","val1");
+        hashMapTest.put("2","val2");
+        hashMapTest.put("3","val3");
+        hashMapTest.put("4","val4");
+    }
+
+    public static void setHashMapTest2(){
+        hashMapTest.put("5","val5");
+        hashMapTest.put("6","val6");
+        hashMapTest.put("7","val7");
+        hashMapTest.put("8","val8");
+    }
+
+    public static HashMap<String, String> getHashMapTest(){
+        return hashMapTest;
+    }
+
+    public static HashMap<String, String> getHashMapTest2(){
+        return hashMapTest2;
+    }
 }

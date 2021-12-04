@@ -1,7 +1,5 @@
 package edu.sjsu.android.stockmanagerproto3;
 
-import com.github.mikephil.charting.charts.LineChart;
-
 import java.util.HashMap;
 
 public class Stock {

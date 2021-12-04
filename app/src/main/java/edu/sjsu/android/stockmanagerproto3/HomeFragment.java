@@ -59,14 +59,15 @@ public class HomeFragment extends Fragment {
             Toast.makeText(getContext(), "Please enter a ticker symbol", Toast.LENGTH_LONG).show();
             return;
         }
+
         String url = String.format(StockDataUtil.getURL_V1(), userInput.getText().toString().toUpperCase());
-        StockDataUtil.fetchRawDataInit(url);
+        /*StockDataUtil.fetchRawDataInit(url);
         while(true){
             // check if fetch done before going to detail
             if(StockDataUtil.getFetchDone()){
                 break;
             }
-        }
+        }*/
         NavController con = Navigation.findNavController(v);
         con.navigate(R.id.action_homeFragment_to_detailFragment);
     }
