@@ -8,15 +8,6 @@
     <fragment
         android:id="@+id/homeFragment"
         android:name="edu.sjsu.android.stockmanagerproto3.HomeFragment"
-        android:label="HomeFragment" >
-        <action
-            android:id="@+id/action_homeFragment_to_detailFragment"
-            app:destination="@id/detailFragment" />
-    </fragment>
+        android:label="HomeFragment" />
     <action android:id="@+id/action_global_homeFragment" app:destination="@id/homeFragment" />
-    <fragment
-        android:id="@+id/detailFragment"
-        android:name="edu.sjsu.android.stockmanagerproto3.DetailFragment"
-        android:label="fragment_detail"
-        tools:layout="@layout/fragment_detail" />
 </navigation>

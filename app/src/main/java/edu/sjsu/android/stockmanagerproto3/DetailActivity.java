@@ -3,21 +3,13 @@ package edu.sjsu.android.stockmanagerproto3;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.github.mikephil.charting.charts.CandleStickChart;
 import com.github.mikephil.charting.components.Description;
@@ -34,67 +26,63 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import edu.sjsu.android.stockmanagerproto3.databinding.FragmentDetailBinding;
+import edu.sjsu.android.stockmanagerproto3.databinding.ActivityDetailBinding;
 
-
-public class DetailFragment extends Fragment {
+public class DetailActivity extends AppCompatActivity {
+    private ActivityDetailBinding binding;
     private CandleStickChart chart;
-    private static TextView stockSymbol;
+    private TextView stockSymbol;
+    private RadioGroup theRange;
     private TextView theDate;
     private TextView open;
     private TextView close;
     private TextView high;
     private TextView low;
     private TextView dateAtPrice;
-    private RadioGroup theRange;
     private ArrayList<CandleEntry> yValues;
     private CandleData data;
-    private int selectedOption = 0;
-    private FragmentDetailBinding binding;
     private RadioButton daily;
     private RadioButton weekly;
     private RadioButton monthly;
-    private String rawData;
     private HashMap<String, Stock> stockData;
     private ArrayList<String> dateKeys;
     private ArrayList<String> metainfo;
-    private String request;
-    public DetailFragment() {
-        // Required empty public constructor
-    }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        binding = FragmentDetailBinding.inflate(getLayoutInflater());
-        Bundle bundle = getArguments();
-        if(bundle != null){
-            //String request = bundle.getString("url");
-            request = bundle.getString("url");
-            //StockDataUtil.fetchRawDataInit(request);
-            //while(true){
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        binding = ActivityDetailBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        Bundle extras = getIntent().getExtras();
+        if(extras != null){
+            String request = extras.getString("url");
+            StockDataUtil.fetchRawDataInit(request);
+            while(true){
                 // check if fetch done before going to detail
-              //  if(StockDataUtil.getFetchDone()){
+                if(StockDataUtil.getFetchDone()){
                     // set back to false
-                //    StockDataUtil.setFetchNotDone();
-                  //  break;
-               // }
-            //}
+                    StockDataUtil.setFetchNotDone();
+                    break;
+                }
+            }
         }
-        // initialize the private variables
         initVars();
         // set the listeners
         setListeners();
-        //initTextViews();
-        //setUpChart();
+        setTextViews();
+        setUpChart();
         chart.invalidate();
-        return binding.getRoot();
+    }
+
+    @Override
+    public void onBackPressed() {
+        this.finish();
+        super.onBackPressed();
     }
 
     @Override
     public void onDestroy(){
-        //resetData();
+        resetData();
         super.onDestroy();
     }
 
@@ -114,16 +102,10 @@ public class DetailFragment extends Fragment {
         stockData = StockDataUtil.getStockData();
         dateKeys = StockDataUtil.getDateKeys2();
         metainfo = StockDataUtil.getMetadata();
-        System.out.println("INITIAL CALL");
-        System.out.println("--------------------------------");
-        System.out.println("Size of stock data: " + stockData.size());
-        System.out.println("Size of date data: " + dateKeys.size());
-        System.out.println("Size of meta info: " + metainfo.size());
-        System.out.println("--------------------------------");
     }
 
     // Set the text views with data of their respective name
-    public void initTextViews(){
+    public void setTextViews(){
         // get from meta info list
         theDate.setText(String.format(getResources().getString(R.string.date), metainfo.get(1))); // date always at position 1
         stockSymbol.setText(metainfo.get(0)); // symbol/ticker always at position 0
@@ -152,7 +134,6 @@ public class DetailFragment extends Fragment {
             @Override
             public void onValueSelected(Entry e, Highlight h) {
                 float entryPos = e.getX();
-                //Toast.makeText(getContext(), "X value: " + entryPos, Toast.LENGTH_SHORT).show();
 
                 if(entryPos < yValues.size()){
                     CandleEntry selectedEntry = yValues.get((int)entryPos);
@@ -170,10 +151,9 @@ public class DetailFragment extends Fragment {
             }
         });
     }
+
     public void checked(View v){
         if(daily.isChecked()){
-            Toast.makeText(getContext(), "one day radio button clicked", Toast.LENGTH_SHORT).show();
-            // TODO: ACTUAL ACTION -- redraw graph with values based on checked value
             String newURL = String.format(StockDataUtil.getURL_V1(), metainfo.get(0));
             resetData();
             StockDataUtil.fetchRawData(newURL, StockDataUtil.getTimeSeriesDaily());
@@ -187,19 +167,12 @@ public class DetailFragment extends Fragment {
             stockData = StockDataUtil.getStockData();
             dateKeys = StockDataUtil.getDateKeys2();
             metainfo = StockDataUtil.getMetadata();
-            System.out.println("--------------------------------");
-            System.out.println("Size of stock data: " + stockData.size());
-            System.out.println("Size of date data: " + dateKeys.size());
-            System.out.println("Size of meta info: " + metainfo.size());
-            System.out.println("--------------------------------");
             updateTextViews();
             setUpChart();
             chart.invalidate();
             return;
         }
         else if(weekly.isChecked()){
-            Toast.makeText(getContext(), "five days radio button clicked", Toast.LENGTH_SHORT).show();
-            // TODO: ACTUAL ACTION -- redraw graph with values based on checked value
             String newURL = String.format(StockDataUtil.getURL_V2(), metainfo.get(0));
             resetData();
             StockDataUtil.fetchRawData(newURL, StockDataUtil.getTimeSeriesWeekly());
@@ -213,19 +186,12 @@ public class DetailFragment extends Fragment {
             stockData = StockDataUtil.getStockData();
             dateKeys = StockDataUtil.getDateKeys2();
             metainfo = StockDataUtil.getMetadata();
-            System.out.println("--------------------------------");
-            System.out.println("Size of stock data: " + stockData.size());
-            System.out.println("Size of date data: " + dateKeys.size());
-            System.out.println("Size of meta info: " + metainfo.size());
-            System.out.println("--------------------------------");
             updateTextViews();
             setUpChart();
             chart.invalidate();
             return;
         }
         else if(monthly.isChecked()){
-            Toast.makeText(getContext(), "three months radio button clicked", Toast.LENGTH_SHORT).show();
-            // TODO: ACTUAL ACTION -- redraw graph with values based on checked value
             String newURL = String.format(StockDataUtil.getURL_V3(), metainfo.get(0));
             resetData();
             StockDataUtil.fetchRawData(newURL, StockDataUtil.getTimesSeriesMonthly());
@@ -239,16 +205,13 @@ public class DetailFragment extends Fragment {
             stockData = StockDataUtil.getStockData();
             dateKeys = StockDataUtil.getDateKeys2();
             metainfo = StockDataUtil.getMetadata();
-            System.out.println("--------------------------------");
-            System.out.println("Size of stock data: " + stockData.size());
-            System.out.println("Size of meta info: " + metainfo.size());
-            System.out.println("--------------------------------");
             updateTextViews();
             setUpChart();
             chart.invalidate();
             return;
         }
     }
+
     /**
      * Configure the candlestick chart
      */
@@ -309,14 +272,18 @@ public class DetailFragment extends Fragment {
     }
 
     public void addToWatchlist(View v){
-        //WatchListFragment.watchlistData.add(metainfo.get(0));
-        //Toast.makeText(getContext(), metainfo.get(0) + "added", Toast.LENGTH_LONG).show();
-        if(StockDataUtil.getWatchlistData().contains(request)){
-            Toast.makeText(getContext(),request + " is already in watchlist!", Toast.LENGTH_LONG).show();
+        if(StockDataUtil.getWatchlistData().contains(metainfo.get(0))){
+            Toast.makeText(this,metainfo.get(0) + " is already in watchlist!", Toast.LENGTH_LONG).show();
+            return;
+        }
+        StockDataUtil.getWatchlistData().add(metainfo.get(0));
+        Toast.makeText(this, metainfo.get(0) + " added!", Toast.LENGTH_LONG).show();
+        /*if(StockDataUtil.getWatchlistData().contains(request)){
+            Toast.makeText(this,request + " is already in watchlist!", Toast.LENGTH_LONG).show();
             return;
         }
         StockDataUtil.addWatchListData(request);
-        Toast.makeText(getContext(), request + " added", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, request + " added", Toast.LENGTH_LONG).show();*/
     }
 
     public void resetData(){

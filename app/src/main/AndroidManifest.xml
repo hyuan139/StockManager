@@ -13,6 +13,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.StockManagerProto3">
         <activity
+            android:name=".DetailActivity"
+            android:exported="true" />
+        <activity
             android:name=".WatchListActivity"
             android:exported="true" />
         <activity

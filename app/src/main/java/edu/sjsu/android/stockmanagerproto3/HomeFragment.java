@@ -1,5 +1,6 @@
 package edu.sjsu.android.stockmanagerproto3;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -60,19 +61,10 @@ public class HomeFragment extends Fragment {
             return;
         }
 
-        //String url = String.format(StockDataUtil.getURL_V1(), userInput.getText().toString().toUpperCase());
-        /*StockDataUtil.fetchRawDataInit(url);
-        while(true){
-            // check if fetch done before going to detail
-            if(StockDataUtil.getFetchDone()){
-                break;
-            }
-        }*/
-        String url = userInput.getText().toString();
-        Bundle bundle = new Bundle();
-        bundle.putString("url", url);
-        NavController con = Navigation.findNavController(v);
-        con.navigate(R.id.action_homeFragment_to_detailFragment, bundle);
+        String url = String.format(StockDataUtil.getURL_V1(), userInput.getText().toString().toUpperCase());
+        Intent toDetailAct = new Intent(getContext(), DetailActivity.class);
+        toDetailAct.putExtra("url", url);
+        startActivity(toDetailAct);
     }
 
 }

@@ -1,5 +1,6 @@
 package edu.sjsu.android.stockmanagerproto3;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -18,7 +19,7 @@ import java.util.ArrayList;
  * A fragment representing a list of Items.
  */
 public class WatchListFragment extends Fragment {
-    WatchListAdapter adapter;
+    static WatchListAdapter adapter;
     RecyclerView recyclerView;
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -40,6 +41,7 @@ public class WatchListFragment extends Fragment {
         adapter = new WatchListAdapter(data);
         recyclerView = (RecyclerView) view;
         recyclerView.setAdapter(adapter);
+        adapter.setOnItemClickListener(this::onItemClicked);
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback =
                 new ItemTouchHelper.SimpleCallback(0,
                         ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
@@ -60,5 +62,16 @@ public class WatchListFragment extends Fragment {
         ItemTouchHelper itemTouch = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouch.attachToRecyclerView(recyclerView);
         return view;
+    }
+
+    public void onItemClicked(View view, String ticker){
+        goToDetail(view, ticker);
+    }
+
+    public void goToDetail(View v, String stock){
+        String request = String.format(StockDataUtil.getURL_V1(), stock);
+        Intent toDetailAct = new Intent(getContext(), DetailActivity.class);
+        toDetailAct.putExtra("url", request);
+        getContext().startActivity(toDetailAct);
     }
 }
