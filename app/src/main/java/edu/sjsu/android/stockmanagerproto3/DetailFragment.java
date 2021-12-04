@@ -58,7 +58,7 @@ public class DetailFragment extends Fragment {
     private HashMap<String, Stock> stockData;
     private ArrayList<String> dateKeys;
     private ArrayList<String> metainfo;
-
+    private String request;
     public DetailFragment() {
         // Required empty public constructor
     }
@@ -70,30 +70,31 @@ public class DetailFragment extends Fragment {
         binding = FragmentDetailBinding.inflate(getLayoutInflater());
         Bundle bundle = getArguments();
         if(bundle != null){
-            String request = bundle.getString("url");
-            StockDataUtil.fetchRawDataInit(request);
-            while(true){
+            //String request = bundle.getString("url");
+            request = bundle.getString("url");
+            //StockDataUtil.fetchRawDataInit(request);
+            //while(true){
                 // check if fetch done before going to detail
-                if(StockDataUtil.getFetchDone()){
+              //  if(StockDataUtil.getFetchDone()){
                     // set back to false
-                    StockDataUtil.setFetchNotDone();
-                    break;
-                }
-            }
+                //    StockDataUtil.setFetchNotDone();
+                  //  break;
+               // }
+            //}
         }
         // initialize the private variables
         initVars();
         // set the listeners
         setListeners();
-        initTextViews();
-        setUpChart();
+        //initTextViews();
+        //setUpChart();
         chart.invalidate();
         return binding.getRoot();
     }
 
     @Override
     public void onDestroy(){
-        resetData();
+        //resetData();
         super.onDestroy();
     }
 
@@ -308,7 +309,14 @@ public class DetailFragment extends Fragment {
     }
 
     public void addToWatchlist(View v){
-        Toast.makeText(getContext(), "Stock added", Toast.LENGTH_LONG).show();
+        //WatchListFragment.watchlistData.add(metainfo.get(0));
+        //Toast.makeText(getContext(), metainfo.get(0) + "added", Toast.LENGTH_LONG).show();
+        if(StockDataUtil.getWatchlistData().contains(request)){
+            Toast.makeText(getContext(),request + " is already in watchlist!", Toast.LENGTH_LONG).show();
+            return;
+        }
+        StockDataUtil.addWatchListData(request);
+        Toast.makeText(getContext(), request + " added", Toast.LENGTH_LONG).show();
     }
 
     public void resetData(){
@@ -316,11 +324,4 @@ public class DetailFragment extends Fragment {
         StockDataUtil.clearDataSets();
     }
 
-    public static void printHashMapStock(){
-        HashMap<String, Stock> stockData = StockDataUtil.getStockData();
-        for(String key: stockData.keySet()){
-            System.out.println(key + " => " + "HIGH: " + stockData.get(key).getHigh()  + " LOW: " + stockData.get(key).getLow()
-                    + " OPEN: " + stockData.get(key).getOpen() + " CLOSE: " + stockData.get(key).getClose());
-        }
-    }
 }

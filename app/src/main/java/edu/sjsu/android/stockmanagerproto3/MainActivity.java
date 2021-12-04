@@ -37,10 +37,13 @@ public class MainActivity extends AppCompatActivity {
             controller.navigate(R.id.action_global_homeFragment);
         }
         else if(item.getItemId() == R.id.watchlistOp){
-            NavHostFragment navHost = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentContainerView2);
+            /*NavHostFragment navHost = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentContainerView2);
             assert navHost != null;
             NavController controller = navHost.getNavController();
-            controller.navigate(R.id.action_global_watchFragment);
+            controller.navigate(R.id.action_global_watchFragment);*/
+            Intent toWatchList = new Intent(this, WatchListActivity.class);
+            // pass stock name here later
+            startActivity(toWatchList);
         }
         else if(item.getItemId() == R.id.uninstall){
             this.uninstall();

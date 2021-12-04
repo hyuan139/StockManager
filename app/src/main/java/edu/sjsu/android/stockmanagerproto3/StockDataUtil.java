@@ -39,6 +39,7 @@ public class StockDataUtil {
     private static ArrayList<String> dateKeys = new ArrayList<>();
     private static ArrayList<String> dateKeys2 = new ArrayList<>(); // same as dateKeys but reversed; used for x-axis
     private static ArrayList<String> metadata = new ArrayList<>();
+    private static ArrayList<String> watchlistData = new ArrayList<>();
     public static String ticker_test = "";
 
     // initially called when use press find button
@@ -286,6 +287,14 @@ public class StockDataUtil {
 
     public static ArrayList<String> getMetadata(){
         return metadata;
+    }
+
+    public static ArrayList<String> getWatchlistData(){
+        return watchlistData;
+    }
+
+    public static void addWatchListData(String stock){
+        watchlistData.add(stock);
     }
 
     public static void clearDataSets(){

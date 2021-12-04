@@ -18,4 +18,5 @@
     <string name="lowPrice">Low price:   	$%s</string>
     <string name="openPrice">Open price: 	$%s</string>
     <string name="closePrice">Close price:	$%s</string>
+    <string name="close_price_s">Close Price: %s</string>
 </resources>

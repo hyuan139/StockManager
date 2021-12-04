@@ -60,7 +60,7 @@ public class HomeFragment extends Fragment {
             return;
         }
 
-        String url = String.format(StockDataUtil.getURL_V1(), userInput.getText().toString().toUpperCase());
+        //String url = String.format(StockDataUtil.getURL_V1(), userInput.getText().toString().toUpperCase());
         /*StockDataUtil.fetchRawDataInit(url);
         while(true){
             // check if fetch done before going to detail
@@ -68,6 +68,7 @@ public class HomeFragment extends Fragment {
                 break;
             }
         }*/
+        String url = userInput.getText().toString();
         Bundle bundle = new Bundle();
         bundle.putString("url", url);
         NavController con = Navigation.findNavController(v);
