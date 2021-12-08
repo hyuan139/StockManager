@@ -34,7 +34,9 @@ public class StockDataUtil {
     private static String URL_V1 = "https://alpha-vantage.p.rapidapi.com/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=%s&outputsize=compact&datatype=json"; // for daily requests
     private static String URL_V2 = "https://alpha-vantage.p.rapidapi.com/query?function=TIME_SERIES_WEEKLY_ADJUSTED&symbol=%s&datatype=json"; // for weekly requests
     private static String URL_V3 = "https://alpha-vantage.p.rapidapi.com/query?symbol=%s&function=TIME_SERIES_MONTHLY_ADJUSTED&datatype=json"; // for weekly requests
+    private static String ERROR_MSG = "Error Message";
     private static boolean fetchDone = false;
+    private static boolean fetchFailed = false;
     private static HashMap<String, Stock> stockData = new HashMap<>();
     private static ArrayList<String> dateKeys = new ArrayList<>();
     private static ArrayList<String> dateKeys2 = new ArrayList<>(); // same as dateKeys but reversed; used for x-axis
@@ -63,12 +65,22 @@ public class StockDataUtil {
                     String result = response.body().string();
                     try {
                         JSONObject jsonObject = new JSONObject(result);
-                        String rawData = jsonObject.getJSONObject(TIME_SERIES_DAILY).toString();
-                        String meta = jsonObject.getJSONObject(METADATA).toString();
-                        // process data after response
-                        processData(rawData);
-                        processMetaData(meta);
-                        fetchDone();
+                        // check if ticker is valid
+                        boolean valid = validateTicker(jsonObject);
+                        if(valid){
+                            System.out.println("Processing data");
+                            String rawData = jsonObject.getJSONObject(TIME_SERIES_DAILY).toString();
+                            String meta = jsonObject.getJSONObject(METADATA).toString();
+                            // process data after response
+                            processData(rawData);
+                            processMetaData(meta);
+                            fetchDone();
+                            System.out.println("DATA FINISHED");
+                        }else{
+                            setFetchFailed();
+                            System.out.println("Stock Util: TICKER EXISTS = " + valid);
+                            return;
+                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -99,6 +111,12 @@ public class StockDataUtil {
                     String result = response.body().string();
                     try {
                         JSONObject jsonObject = new JSONObject(result);
+                        boolean valid = validateTicker(jsonObject);
+                        if(!valid){
+                            fetchFailed = false; // reset
+                            setFetchFailed();
+                            return;
+                        }
                         String rawData = jsonObject.getJSONObject(timeSeriesType).toString();
                         String meta = jsonObject.getJSONObject(METADATA).toString();
                         // process data after response
@@ -114,16 +132,36 @@ public class StockDataUtil {
         });
     }
 
-    public static boolean fetchDone(){
-        return fetchDone = true;
-    }
-
-    public static boolean setFetchNotDone(){
-        return fetchDone = false;
+    public static void fetchDone(){
+        fetchDone = true;
     }
 
     public static boolean getFetchDone(){
         return fetchDone;
+    }
+
+    public static void setFetchFailed(){
+        fetchFailed = true;
+    }
+
+    public static void setFetchNotFailed(){
+        fetchFailed = false;
+    }
+
+    public static void setFetchNotDone(){
+        fetchDone = false;
+    }
+
+    public static boolean getFetchFailed(){
+        return fetchFailed;
+    }
+
+    public static boolean validateTicker(JSONObject jsonObject){
+        boolean valid = true;
+        if(jsonObject.has(ERROR_MSG)){
+            valid = false;
+        }
+        return valid;
     }
 
     public static void processMetaData(String mdata){

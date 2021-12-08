@@ -1,5 +1,6 @@
 package edu.sjsu.android.stockmanagerproto3;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
@@ -54,12 +55,12 @@ public class DetailActivity extends AppCompatActivity {
         binding = ActivityDetailBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         Bundle extras = getIntent().getExtras();
-        if(extras != null){
+        if (extras != null) {
             String request = extras.getString("url");
             StockDataUtil.fetchRawDataInit(request);
-            while(true){
+            while (true) {
                 // check if fetch done before going to detail
-                if(StockDataUtil.getFetchDone()){
+                if (StockDataUtil.getFetchDone()) {
                     // set back to false
                     StockDataUtil.setFetchNotDone();
                     break;
@@ -81,12 +82,12 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onDestroy(){
+    public void onDestroy() {
         resetData();
         super.onDestroy();
     }
 
-    public void initVars(){
+    public void initVars() {
         chart = binding.stockChart;
         theDate = binding.theDate;
         theRange = binding.range;
@@ -105,27 +106,27 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     // Set the text views with data of their respective name
-    public void setTextViews(){
+    public void setTextViews() {
         // get from meta info list
         theDate.setText(String.format(getResources().getString(R.string.date), metainfo.get(1))); // date always at position 1
         stockSymbol.setText(metainfo.get(0)); // symbol/ticker always at position 0
         // date list in order from oldest to recent
-        dateAtPrice.setText(dateKeys.get(dateKeys.size()-1));
-        high.setText(String.format(getResources().getString(R.string.highPrice), stockData.get(dateKeys.get(dateKeys.size()-1)).getHigh()));
-        low.setText(String.format(getResources().getString(R.string.lowPrice), stockData.get(dateKeys.get(dateKeys.size()-1)).getLow()));
-        open.setText(String.format(getResources().getString(R.string.openPrice), stockData.get(dateKeys.get(dateKeys.size()-1)).getOpen()));
-        close.setText(String.format(getResources().getString(R.string.closePrice), stockData.get(dateKeys.get(dateKeys.size()-1)).getClose()));
+        dateAtPrice.setText(dateKeys.get(dateKeys.size() - 1));
+        high.setText(String.format(getResources().getString(R.string.highPrice), stockData.get(dateKeys.get(dateKeys.size() - 1)).getHigh()));
+        low.setText(String.format(getResources().getString(R.string.lowPrice), stockData.get(dateKeys.get(dateKeys.size() - 1)).getLow()));
+        open.setText(String.format(getResources().getString(R.string.openPrice), stockData.get(dateKeys.get(dateKeys.size() - 1)).getOpen()));
+        close.setText(String.format(getResources().getString(R.string.closePrice), stockData.get(dateKeys.get(dateKeys.size() - 1)).getClose()));
     }
 
-    public void updateTextViews(){
-        dateAtPrice.setText(dateKeys.get(dateKeys.size()-1));
-        high.setText(String.format(getResources().getString(R.string.highPrice), stockData.get(dateKeys.get(dateKeys.size()-1)).getHigh()));
-        low.setText(String.format(getResources().getString(R.string.lowPrice), stockData.get(dateKeys.get(dateKeys.size()-1)).getLow()));
-        open.setText(String.format(getResources().getString(R.string.openPrice), stockData.get(dateKeys.get(dateKeys.size()-1)).getOpen()));
-        close.setText(String.format(getResources().getString(R.string.closePrice), stockData.get(dateKeys.get(dateKeys.size()-1)).getClose()));
+    public void updateTextViews() {
+        dateAtPrice.setText(dateKeys.get(dateKeys.size() - 1));
+        high.setText(String.format(getResources().getString(R.string.highPrice), stockData.get(dateKeys.get(dateKeys.size() - 1)).getHigh()));
+        low.setText(String.format(getResources().getString(R.string.lowPrice), stockData.get(dateKeys.get(dateKeys.size() - 1)).getLow()));
+        open.setText(String.format(getResources().getString(R.string.openPrice), stockData.get(dateKeys.get(dateKeys.size() - 1)).getOpen()));
+        close.setText(String.format(getResources().getString(R.string.closePrice), stockData.get(dateKeys.get(dateKeys.size() - 1)).getClose()));
     }
 
-    public void setListeners(){
+    public void setListeners() {
         daily.setOnClickListener(this::checked);
         weekly.setOnClickListener(this::checked);
         monthly.setOnClickListener(this::checked);
@@ -135,13 +136,13 @@ public class DetailActivity extends AppCompatActivity {
             public void onValueSelected(Entry e, Highlight h) {
                 float entryPos = e.getX();
 
-                if(entryPos < yValues.size()){
-                    CandleEntry selectedEntry = yValues.get((int)entryPos);
+                if (entryPos < yValues.size()) {
+                    CandleEntry selectedEntry = yValues.get((int) entryPos);
                     high.setText(String.format(getResources().getString(R.string.highPrice), Float.toString(selectedEntry.getHigh())));
-                    low.setText(String.format(getResources().getString(R.string.lowPrice),Float.toString(selectedEntry.getLow())));
-                    open.setText(String.format(getResources().getString(R.string.openPrice),Float.toString(selectedEntry.getOpen())));
-                    close.setText(String.format(getResources().getString(R.string.closePrice),Float.toString(selectedEntry.getClose())));
-                    dateAtPrice.setText(stockData.get(dateKeys.get((int)entryPos)).getDate());
+                    low.setText(String.format(getResources().getString(R.string.lowPrice), Float.toString(selectedEntry.getLow())));
+                    open.setText(String.format(getResources().getString(R.string.openPrice), Float.toString(selectedEntry.getOpen())));
+                    close.setText(String.format(getResources().getString(R.string.closePrice), Float.toString(selectedEntry.getClose())));
+                    dateAtPrice.setText(stockData.get(dateKeys.get((int) entryPos)).getDate());
                 }
             }
 
@@ -152,13 +153,13 @@ public class DetailActivity extends AppCompatActivity {
         });
     }
 
-    public void checked(View v){
-        if(daily.isChecked()){
+    public void checked(View v) {
+        if (daily.isChecked()) {
             String newURL = String.format(StockDataUtil.getURL_V1(), metainfo.get(0));
             resetData();
             StockDataUtil.fetchRawData(newURL, StockDataUtil.getTimeSeriesDaily());
-            while(true){
-                if(StockDataUtil.getFetchDone()){
+            while (true) {
+                if (StockDataUtil.getFetchDone()) {
                     // set back to false
                     StockDataUtil.setFetchNotDone();
                     break;
@@ -171,13 +172,12 @@ public class DetailActivity extends AppCompatActivity {
             setUpChart();
             chart.invalidate();
             return;
-        }
-        else if(weekly.isChecked()){
+        } else if (weekly.isChecked()) {
             String newURL = String.format(StockDataUtil.getURL_V2(), metainfo.get(0));
             resetData();
             StockDataUtil.fetchRawData(newURL, StockDataUtil.getTimeSeriesWeekly());
-            while(true){
-                if(StockDataUtil.getFetchDone()){
+            while (true) {
+                if (StockDataUtil.getFetchDone()) {
                     // set back to false
                     StockDataUtil.setFetchNotDone();
                     break;
@@ -190,13 +190,12 @@ public class DetailActivity extends AppCompatActivity {
             setUpChart();
             chart.invalidate();
             return;
-        }
-        else if(monthly.isChecked()){
+        } else if (monthly.isChecked()) {
             String newURL = String.format(StockDataUtil.getURL_V3(), metainfo.get(0));
             resetData();
             StockDataUtil.fetchRawData(newURL, StockDataUtil.getTimesSeriesMonthly());
-            while(true){
-                if(StockDataUtil.getFetchDone()){
+            while (true) {
+                if (StockDataUtil.getFetchDone()) {
                     // set back to false
                     StockDataUtil.setFetchNotDone();
                     break;
@@ -216,7 +215,7 @@ public class DetailActivity extends AppCompatActivity {
      * Configure the candlestick chart
      */
     // (possible) args: date list, stock data in HashMap<Date(String,Stock)>
-    public void setUpChart(){
+    public void setUpChart() {
         chart.setDoubleTapToZoomEnabled(false);
         chart.setPinchZoom(false); // for now
         chart.setDrawBorders(true);
@@ -247,9 +246,9 @@ public class DetailActivity extends AppCompatActivity {
     }
 
 
-    public void generateData(){
+    public void generateData() {
         yValues = new ArrayList<>();
-        for(int i = 0; i < stockData.size(); i++){
+        for (int i = 0; i < stockData.size(); i++) {
             // CandleEntry(x, high, low, open, close);
             yValues.add(new CandleEntry(i, Float.parseFloat(stockData.get(dateKeys.get(i)).getHigh())
                     , Float.parseFloat(stockData.get(dateKeys.get(i)).getLow())
@@ -271,9 +270,9 @@ public class DetailActivity extends AppCompatActivity {
         data = new CandleData(set1);
     }
 
-    public void addToWatchlist(View v){
-        if(StockDataUtil.getWatchlistData().contains(metainfo.get(0))){
-            Toast.makeText(this,metainfo.get(0) + " is already in watchlist!", Toast.LENGTH_LONG).show();
+    public void addToWatchlist(View v) {
+        if (StockDataUtil.getWatchlistData().contains(metainfo.get(0))) {
+            Toast.makeText(this, metainfo.get(0) + " is already in watchlist!", Toast.LENGTH_LONG).show();
             return;
         }
         StockDataUtil.getWatchlistData().add(metainfo.get(0));
@@ -286,8 +285,8 @@ public class DetailActivity extends AppCompatActivity {
         Toast.makeText(this, request + " added", Toast.LENGTH_LONG).show();*/
     }
 
-    public void resetData(){
-        chart.clearValues();
+    public void resetData() {
+        //chart.clearValues();
         StockDataUtil.clearDataSets();
     }
 

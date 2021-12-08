@@ -52,6 +52,13 @@ public class HomeFragment extends Fragment {
         FragmentHomeBinding binding = FragmentHomeBinding.inflate(getLayoutInflater());
         userInput = binding.userInput;
         binding.searchBtn.setOnClickListener(this::searchBtn);
+        /*Bundle extras = getActivity().getIntent().getExtras();
+        if(extras != null){
+            boolean error = extras.getBoolean("error");
+            if(error){
+                Toast.makeText(getContext(), "Please enter a valid ticker symbol", Toast.LENGTH_SHORT).show();
+            }
+        }*/
         return binding.getRoot();
     }
 
@@ -62,9 +69,27 @@ public class HomeFragment extends Fragment {
         }
 
         String url = String.format(StockDataUtil.getURL_V1(), userInput.getText().toString().toUpperCase());
-        Intent toDetailAct = new Intent(getContext(), DetailActivity.class);
-        toDetailAct.putExtra("url", url);
-        startActivity(toDetailAct);
+        StockDataUtil.fetchRawDataInit(url);
+        while (true) {
+            if(StockDataUtil.getFetchFailed()){
+                System.out.println("HOME FRAG INVALID TICKER");
+                Toast.makeText(getContext(), "Please enter a valid ticker symbol", Toast.LENGTH_SHORT).show();
+                StockDataUtil.setFetchNotFailed();
+                break;
+            }
+            if (StockDataUtil.getFetchDone()) {
+                System.out.println("HOME FRAG FETCH DATA DONE");
+                // set back to false
+                break;
+            }
+        }
+        // ticker exists and data is done loading
+        if(StockDataUtil.getFetchDone()){
+            StockDataUtil.setFetchNotDone();
+            Intent toDetailAct = new Intent(getContext(), DetailActivity.class);
+            //toDetailAct.putExtra("url", url);
+            startActivity(toDetailAct);
+        }
     }
 
 }
