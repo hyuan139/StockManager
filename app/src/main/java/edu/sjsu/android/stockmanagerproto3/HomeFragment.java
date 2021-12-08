@@ -69,7 +69,7 @@ public class HomeFragment extends Fragment {
         }
 
         String url = String.format(StockDataUtil.getURL_V1(), userInput.getText().toString().toUpperCase());
-        StockDataUtil.fetchRawDataInit(url);
+        /*StockDataUtil.fetchRawDataInit(url);
         while (true) {
             if(StockDataUtil.getFetchFailed()){
                 System.out.println("HOME FRAG INVALID TICKER");
@@ -82,14 +82,17 @@ public class HomeFragment extends Fragment {
                 // set back to false
                 break;
             }
-        }
+        }*/
         // ticker exists and data is done loading
-        if(StockDataUtil.getFetchDone()){
+        /*if(StockDataUtil.getFetchDone()){
             StockDataUtil.setFetchNotDone();
             Intent toDetailAct = new Intent(getContext(), DetailActivity.class);
             //toDetailAct.putExtra("url", url);
             startActivity(toDetailAct);
-        }
+        }*/
+        MyAsyncTask task = new MyAsyncTask(getContext());
+        task.execute(url);
+        userInput.setText("");
     }
 
 }

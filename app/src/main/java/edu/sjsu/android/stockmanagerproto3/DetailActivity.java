@@ -1,8 +1,12 @@
 package edu.sjsu.android.stockmanagerproto3;
 
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.RadioButton;
@@ -48,16 +52,17 @@ public class DetailActivity extends AppCompatActivity {
     private HashMap<String, Stock> stockData;
     private ArrayList<String> dateKeys;
     private ArrayList<String> metainfo;
+    private FetchDataAsyncTask task;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityDetailBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        Bundle extras = getIntent().getExtras();
+        /*Bundle extras = getIntent().getExtras();
         if (extras != null) {
             String request = extras.getString("url");
-            StockDataUtil.fetchRawDataInit(request);
+            /*StockDataUtil.fetchRawDataInit(request);
             while (true) {
                 // check if fetch done before going to detail
                 if (StockDataUtil.getFetchDone()) {
@@ -66,7 +71,9 @@ public class DetailActivity extends AppCompatActivity {
                     break;
                 }
             }
-        }
+            MyAsyncTask task = new MyAsyncTask(this);
+            task.execute(request);
+        }*/
         initVars();
         // set the listeners
         setListeners();
@@ -157,56 +164,62 @@ public class DetailActivity extends AppCompatActivity {
         if (daily.isChecked()) {
             String newURL = String.format(StockDataUtil.getURL_V1(), metainfo.get(0));
             resetData();
-            StockDataUtil.fetchRawData(newURL, StockDataUtil.getTimeSeriesDaily());
+            /*StockDataUtil.fetchRawData(newURL, StockDataUtil.getTimeSeriesDaily());
             while (true) {
                 if (StockDataUtil.getFetchDone()) {
                     // set back to false
                     StockDataUtil.setFetchNotDone();
                     break;
                 }
-            }
-            stockData = StockDataUtil.getStockData();
+            }*/
+            task = new FetchDataAsyncTask(this);
+            task.execute(newURL, StockDataUtil.getTimeSeriesDaily());
+            /*stockData = StockDataUtil.getStockData();
             dateKeys = StockDataUtil.getDateKeys2();
             metainfo = StockDataUtil.getMetadata();
             updateTextViews();
             setUpChart();
-            chart.invalidate();
+            chart.invalidate();*/
             return;
         } else if (weekly.isChecked()) {
             String newURL = String.format(StockDataUtil.getURL_V2(), metainfo.get(0));
             resetData();
-            StockDataUtil.fetchRawData(newURL, StockDataUtil.getTimeSeriesWeekly());
+            /*StockDataUtil.fetchRawData(newURL, StockDataUtil.getTimeSeriesWeekly());
             while (true) {
                 if (StockDataUtil.getFetchDone()) {
                     // set back to false
                     StockDataUtil.setFetchNotDone();
                     break;
                 }
-            }
-            stockData = StockDataUtil.getStockData();
+            }*/
+            task = new FetchDataAsyncTask(this);
+            task.execute(newURL, StockDataUtil.getTimeSeriesWeekly());
+            /*stockData = StockDataUtil.getStockData();
             dateKeys = StockDataUtil.getDateKeys2();
             metainfo = StockDataUtil.getMetadata();
             updateTextViews();
             setUpChart();
-            chart.invalidate();
+            chart.invalidate();*/
             return;
         } else if (monthly.isChecked()) {
             String newURL = String.format(StockDataUtil.getURL_V3(), metainfo.get(0));
             resetData();
-            StockDataUtil.fetchRawData(newURL, StockDataUtil.getTimesSeriesMonthly());
+            /*StockDataUtil.fetchRawData(newURL, StockDataUtil.getTimesSeriesMonthly());
             while (true) {
                 if (StockDataUtil.getFetchDone()) {
                     // set back to false
                     StockDataUtil.setFetchNotDone();
                     break;
                 }
-            }
-            stockData = StockDataUtil.getStockData();
+            }*/
+            task = new FetchDataAsyncTask(this);
+            task.execute(newURL, StockDataUtil.getTimesSeriesMonthly());
+            /*stockData = StockDataUtil.getStockData();
             dateKeys = StockDataUtil.getDateKeys2();
             metainfo = StockDataUtil.getMetadata();
             updateTextViews();
             setUpChart();
-            chart.invalidate();
+            chart.invalidate();*/
             return;
         }
     }
@@ -285,9 +298,78 @@ public class DetailActivity extends AppCompatActivity {
         Toast.makeText(this, request + " added", Toast.LENGTH_LONG).show();*/
     }
 
+    public void updateData(){
+        stockData = StockDataUtil.getStockData();
+        dateKeys = StockDataUtil.getDateKeys2();
+        metainfo = StockDataUtil.getMetadata();
+        updateTextViews();
+        setUpChart();
+        chart.invalidate();
+    }
     public void resetData() {
-        //chart.clearValues();
+        chart.clearValues();
         StockDataUtil.clearDataSets();
+        //StockDataUtil.resetBooleans();
     }
 
+    private class FetchDataAsyncTask extends AsyncTask<String, Void, Void>{
+        private Context context;
+        private ProgressDialog pd;
+
+        public FetchDataAsyncTask(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            //System.out.println("In onPreExecute...");
+            pd = new ProgressDialog(context);
+            pd.setTitle("Loading Data");
+            pd.setMessage("Please Wait...");
+            pd.setButton(ProgressDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.cancel();
+                    cancel(true);
+                }
+            });
+            pd.show();
+        }
+
+        @Override
+        protected Void doInBackground(String... strings) {
+            //System.out.println("In doInBackground...");
+            String urlVersion = strings[0];
+            String type = strings[1];
+            System.out.println("The Request: " + urlVersion + "Type: " + type);
+            if(type.equals(StockDataUtil.getTimeSeriesDaily())){
+                //request = String.format(StockDataUtil.getURL_V1(), StockDataUtil.getMetadata().get(0));
+                StockDataUtil.fetchRawData(urlVersion, type);
+            }
+            else if(type.equals(StockDataUtil.getTimeSeriesWeekly())){
+                //request = String.format(StockDataUtil.getURL_V2(), StockDataUtil.getMetadata().get(0));
+                StockDataUtil.fetchRawData(urlVersion, type);
+            }
+            else if(type.equals(StockDataUtil.getTimesSeriesMonthly())){
+                //request = String.format(StockDataUtil.getURL_V3(), StockDataUtil.getMetadata().get(0));
+                StockDataUtil.fetchRawData(urlVersion, type);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void v) {
+            super.onPostExecute(v);
+            //System.out.println("In onPostExecute...");
+            while(true){
+                if(StockDataUtil.getFetchDone()){
+                    // set back to false
+                    StockDataUtil.setFetchNotDone();
+                    break;
+                }
+            }
+            updateData();
+            pd.dismiss();
+        }
+    }
 }

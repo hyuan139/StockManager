@@ -4,7 +4,7 @@
     <string name="welcome">Welcome to StockManager!</string>
     <string name="info1">-> Enter the ticker in the search box below to view a \n\t\tstock.</string>
     <string name="info2">-> Click the eye icon to navigate to your curated \n\t\twatchlist.</string>
-    <string name="note">IMPORTANT NOTE:\nForex/Cryptocurrency look up not supported at this time.\nOnly daily values available for now\n!!! For now, support one look up. To make another query \nclose and reopen app.</string>
+    <string name="note">IMPORTANT NOTE:\nForex/Crypto look up not supported at this time.\nThis app is limited by 500 requests per day.\nPlease limit requests to 5 per minute\n(A request with a typo counts as a request!)</string>
     <string name="searchInput">Search:</string>
     <string name="ticker">Enter ticker symbol name</string>
     <string name="find">Find</string>

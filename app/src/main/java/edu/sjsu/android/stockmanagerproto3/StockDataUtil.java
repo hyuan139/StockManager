@@ -1,6 +1,7 @@
 package edu.sjsu.android.stockmanagerproto3;
 
 import androidx.annotation.NonNull;
+
 import org.json.*;
 
 import java.io.IOException;
@@ -45,7 +46,7 @@ public class StockDataUtil {
     public static String ticker_test = "";
 
     // initially called when use press find button
-    public static void fetchRawDataInit(String url){
+    public static void fetchRawDataInit(String url) {
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
                 .url(url)
@@ -61,24 +62,25 @@ public class StockDataUtil {
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                if(response.isSuccessful()){
+                if (response.isSuccessful()) {
                     String result = response.body().string();
                     try {
                         JSONObject jsonObject = new JSONObject(result);
                         // check if ticker is valid
                         boolean valid = validateTicker(jsonObject);
-                        if(valid){
-                            System.out.println("Processing data");
+                        if (valid) {
+                            //System.out.println("Processing data");
                             String rawData = jsonObject.getJSONObject(TIME_SERIES_DAILY).toString();
                             String meta = jsonObject.getJSONObject(METADATA).toString();
                             // process data after response
                             processData(rawData);
                             processMetaData(meta);
                             fetchDone();
-                            System.out.println("DATA FINISHED");
-                        }else{
+                            //System.out.println("DATA FINISHED");
+                        } else {
+                            fetchDone();
                             setFetchFailed();
-                            System.out.println("Stock Util: TICKER EXISTS = " + valid);
+                            //System.out.println("Stock Util: TICKER EXISTS = " + valid);
                             return;
                         }
                     } catch (JSONException e) {
@@ -91,7 +93,7 @@ public class StockDataUtil {
     }
 
     // fetch raw data based on user input from Detail Fragment
-    public static void fetchRawData(String url, String timeSeriesType){
+    public static void fetchRawData(String url, String timeSeriesType) {
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
                 .url(url)
@@ -107,22 +109,25 @@ public class StockDataUtil {
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                if(response.isSuccessful()){
+                if (response.isSuccessful()) {
                     String result = response.body().string();
                     try {
                         JSONObject jsonObject = new JSONObject(result);
                         boolean valid = validateTicker(jsonObject);
-                        if(!valid){
-                            fetchFailed = false; // reset
+                        if (valid) {
+                            //System.out.println("Processing data");
+                            String rawData = jsonObject.getJSONObject(timeSeriesType).toString();
+                            String meta = jsonObject.getJSONObject(METADATA).toString();
+                            // process data after response
+                            processData(rawData);
+                            processMetaData(meta);
+                            fetchDone();
+                            //System.out.println("DATA FINISHED");
+                        } else {
                             setFetchFailed();
+                            //System.out.println("Stock Util: TICKER EXISTS = " + valid);
                             return;
                         }
-                        String rawData = jsonObject.getJSONObject(timeSeriesType).toString();
-                        String meta = jsonObject.getJSONObject(METADATA).toString();
-                        // process data after response
-                        processData(rawData);
-                        processMetaData(meta);
-                        fetchDone();
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -132,43 +137,44 @@ public class StockDataUtil {
         });
     }
 
-    public static void fetchDone(){
+    public static void fetchDone() {
         fetchDone = true;
     }
 
-    public static boolean getFetchDone(){
+    public static boolean getFetchDone() {
         return fetchDone;
     }
 
-    public static void setFetchFailed(){
+    public static void setFetchFailed() {
         fetchFailed = true;
     }
 
-    public static void setFetchNotFailed(){
+    public static void setFetchNotFailed() {
         fetchFailed = false;
     }
 
-    public static void setFetchNotDone(){
+    public static void setFetchNotDone() {
         fetchDone = false;
     }
 
-    public static boolean getFetchFailed(){
+    public static boolean getFetchFailed() {
         return fetchFailed;
     }
 
-    public static boolean validateTicker(JSONObject jsonObject){
+    public static boolean validateTicker(JSONObject jsonObject) {
         boolean valid = true;
-        if(jsonObject.has(ERROR_MSG)){
+        if (jsonObject.has(ERROR_MSG)) {
             valid = false;
+            System.out.println("ERROR MSG: " + jsonObject.toString());
         }
         return valid;
     }
 
-    public static void processMetaData(String mdata){
+    public static void processMetaData(String mdata) {
         try {
             JSONObject meta = new JSONObject(mdata);
             ArrayList<String> temp = new ArrayList<>();
-            temp.add(meta.getString(TICKER).replaceAll("\"","")); // always first element
+            temp.add(meta.getString(TICKER).replaceAll("\"", "")); // always first element
             temp.add(meta.getString(LAST_ACCESSED).replaceAll("\"", "")); // always second element
             metadata = temp;
         } catch (JSONException e) {
@@ -176,13 +182,13 @@ public class StockDataUtil {
         }
     }
 
-    public static void processData(String rdata){
+    public static void processData(String rdata) {
         String processed = prepareData(rdata);
         dateKeys = dateList(processed);
         try {
             JSONObject prices = new JSONObject(rdata);
             HashMap<String, Stock> temp = new HashMap<>();
-            for(int i = 0; i < dateKeys.size(); i++){
+            for (int i = 0; i < dateKeys.size(); i++) {
                 // public Stock(String high, String low, String open, String close){
                 temp.put(dateKeys.get(i), new Stock(
                         prices.getJSONObject(dateKeys.get(i)).getString(HIGH),
@@ -199,27 +205,27 @@ public class StockDataUtil {
         reverseList(dateKeys);
     }
 
-    public static String prepareData(String rawData){
+    public static String prepareData(String rawData) {
         String preProcess1 = removeOuterBracket(rawData);
         return removeQuotes(preProcess1);
     }
 
     // Method body is with assumption {, } are at the start and end of the string respectively
-    public static String removeOuterBracket(String data){
-        return data.substring(1, data.length()-1);
+    public static String removeOuterBracket(String data) {
+        return data.substring(1, data.length() - 1);
     }
 
-    public static String removeQuotes(String data){
+    public static String removeQuotes(String data) {
         return data.replaceAll("\"", "");
     }
 
-    public static ArrayList<String> dateList(String data){
+    public static ArrayList<String> dateList(String data) {
         ArrayList<String> list = new ArrayList<>();
         String[] item = data.split("\\},");
         int counter = 0;
-        for(String val: item){
+        for (String val : item) {
             // only add the recent entries (100 max)
-            if(counter >= 100){
+            if (counter >= 100) {
                 break;
             }
             addDate(list, val);
@@ -228,17 +234,17 @@ public class StockDataUtil {
         return list;
     }
 
-    public static void addDate(ArrayList<String> list, String date){
-        for(int i = 0; i < date.length(); i++){
-            if(date.substring(i,i+1).equals(":")){
+    public static void addDate(ArrayList<String> list, String date) {
+        for (int i = 0; i < date.length(); i++) {
+            if (date.substring(i, i + 1).equals(":")) {
                 list.add(date.substring(0, i));
                 return;
             }
         }
     }
 
-    public static void reverseList(ArrayList<String> list){
-        for(int i = list.size()-1; i >= 0; i--){
+    public static void reverseList(ArrayList<String> list) {
+        for (int i = list.size() - 1; i >= 0; i--) {
             dateKeys2.add(list.get(i));
         }
     }
@@ -251,17 +257,18 @@ public class StockDataUtil {
         return URL_V2;
     }
 
-    public static String getURL_V3(){
+    public static String getURL_V3() {
         return URL_V3;
     }
 
-    public static String getKey(){
+    public static String getKey() {
         return KEY;
     }
 
     public static String getDAILY() {
         return DAILY;
     }
+
     public static String getMETADATA() {
         return METADATA;
     }
@@ -299,15 +306,15 @@ public class StockDataUtil {
         return LAST_ACCESSED;
     }
 
-    public static String getTimeSeriesDaily(){
+    public static String getTimeSeriesDaily() {
         return TIME_SERIES_DAILY;
     }
 
-    public static String getTimeSeriesWeekly(){
+    public static String getTimeSeriesWeekly() {
         return TIME_SERIES_WEEKLY;
     }
 
-    public static String getTimesSeriesMonthly(){
+    public static String getTimesSeriesMonthly() {
         return TIMES_SERIES_MONTHLY;
     }
 
@@ -315,36 +322,41 @@ public class StockDataUtil {
         return stockData;
     }
 
-    public static ArrayList<String> getDateKeys(){
+    public static ArrayList<String> getDateKeys() {
         return dateKeys;
     }
 
-    public static ArrayList<String> getDateKeys2(){
+    public static ArrayList<String> getDateKeys2() {
         return dateKeys2;
     }
 
-    public static ArrayList<String> getMetadata(){
+    public static ArrayList<String> getMetadata() {
         return metadata;
     }
 
-    public static ArrayList<String> getWatchlistData(){
+    public static ArrayList<String> getWatchlistData() {
         return watchlistData;
     }
 
-    public static void addWatchListData(String stock){
+    public static void addWatchListData(String stock) {
         watchlistData.add(stock);
     }
 
-    public static void clearDataSets(){
+    public static void clearDataSets() {
         stockData.clear();
         dateKeys.clear();
         dateKeys2.clear();
         metadata.clear();
     }
 
-
-    public static void setTicker_test(String ticker){
-        ticker_test = ticker;
+   /* public static void resetBooleans() {
+        fetchDone = false;
+        fetchFailed = false;
     }
 
+
+    public static void setTicker_test(String ticker) {
+        ticker_test = ticker;
+    }
+*/
 }
