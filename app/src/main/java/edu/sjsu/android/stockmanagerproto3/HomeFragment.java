@@ -1,40 +1,17 @@
 package edu.sjsu.android.stockmanagerproto3;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
-
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.net.URI;
-import java.util.ArrayList;
 
 import edu.sjsu.android.stockmanagerproto3.databinding.FragmentHomeBinding;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
 
 public class HomeFragment extends Fragment {
     private EditText userInput;
-    private OkHttpClient client = new OkHttpClient();
 
     public HomeFragment() {
         // Required empty public constructor
@@ -52,44 +29,20 @@ public class HomeFragment extends Fragment {
         FragmentHomeBinding binding = FragmentHomeBinding.inflate(getLayoutInflater());
         userInput = binding.userInput;
         binding.searchBtn.setOnClickListener(this::searchBtn);
-        /*Bundle extras = getActivity().getIntent().getExtras();
-        if(extras != null){
-            boolean error = extras.getBoolean("error");
-            if(error){
-                Toast.makeText(getContext(), "Please enter a valid ticker symbol", Toast.LENGTH_SHORT).show();
-            }
-        }*/
         return binding.getRoot();
     }
 
+    /**
+     * Fetch the stock data based on user input
+     * @param v
+     */
     public void searchBtn(View v){
         if(userInput.getText().toString().isEmpty()){
-            Toast.makeText(getContext(), "Please enter a ticker symbol", Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), "Please enter a ticker symbol", Toast.LENGTH_SHORT).show();
             return;
         }
 
         String url = String.format(StockDataUtil.getURL_V1(), userInput.getText().toString().toUpperCase());
-        /*StockDataUtil.fetchRawDataInit(url);
-        while (true) {
-            if(StockDataUtil.getFetchFailed()){
-                System.out.println("HOME FRAG INVALID TICKER");
-                Toast.makeText(getContext(), "Please enter a valid ticker symbol", Toast.LENGTH_SHORT).show();
-                StockDataUtil.setFetchNotFailed();
-                break;
-            }
-            if (StockDataUtil.getFetchDone()) {
-                System.out.println("HOME FRAG FETCH DATA DONE");
-                // set back to false
-                break;
-            }
-        }*/
-        // ticker exists and data is done loading
-        /*if(StockDataUtil.getFetchDone()){
-            StockDataUtil.setFetchNotDone();
-            Intent toDetailAct = new Intent(getContext(), DetailActivity.class);
-            //toDetailAct.putExtra("url", url);
-            startActivity(toDetailAct);
-        }*/
         MyAsyncTask task = new MyAsyncTask(getContext());
         task.execute(url);
         userInput.setText("");

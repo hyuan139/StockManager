@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">StockManagerProto3</string>
+    <string name="app_name">Stock Manager</string>
     <string name="stockInfo1">DETAIL FRAGMENT SUCCESS</string>
     <string name="welcome">Welcome to StockManager!</string>
     <string name="info1">-> Enter the ticker in the search box below to view a \n\t\tstock.</string>

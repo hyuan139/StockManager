@@ -1,17 +1,12 @@
 package edu.sjsu.android.stockmanagerproto3;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentActivity;
-import androidx.navigation.NavController;
-import androidx.navigation.fragment.NavHostFragment;
 
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -29,24 +24,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item){
-        if(item.getItemId() == R.id.homeOp){
-            NavHostFragment navHost = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentContainerView2);
-            assert navHost != null;
-            NavController controller = navHost.getNavController();
-            controller.navigate(R.id.action_global_homeFragment);
-        }
-        else if(item.getItemId() == R.id.watchlistOp){
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.watchlistOp) {
             Intent toWatchList = new Intent(this, WatchListActivity.class);
             startActivity(toWatchList);
-        }
-        else if(item.getItemId() == R.id.uninstall){
+        } else if (item.getItemId() == R.id.uninstall) {
             this.uninstall();
         }
         return super.onOptionsItemSelected(item);
     }
 
-    public void uninstall(){
+    public void uninstall() {
         Intent delete = new Intent(Intent.ACTION_DELETE, Uri.parse("package:" + getPackageName()));
         startActivity(delete);
     }

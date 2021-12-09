@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-
+/**
+ * Activity for the watchlist
+ */
 public class WatchListActivity extends AppCompatActivity {
 
     @Override

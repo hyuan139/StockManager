@@ -3,7 +3,6 @@ package edu.sjsu.android.stockmanagerproto3;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.AsyncTask;
@@ -33,6 +32,9 @@ import java.util.HashMap;
 
 import edu.sjsu.android.stockmanagerproto3.databinding.ActivityDetailBinding;
 
+/**
+ * Activity displaying a stock's detail data (Open, Close, High, and Low price)
+ */
 public class DetailActivity extends AppCompatActivity {
     private ActivityDetailBinding binding;
     private CandleStickChart chart;
@@ -59,21 +61,6 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityDetailBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        /*Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            String request = extras.getString("url");
-            /*StockDataUtil.fetchRawDataInit(request);
-            while (true) {
-                // check if fetch done before going to detail
-                if (StockDataUtil.getFetchDone()) {
-                    // set back to false
-                    StockDataUtil.setFetchNotDone();
-                    break;
-                }
-            }
-            MyAsyncTask task = new MyAsyncTask(this);
-            task.execute(request);
-        }*/
         initVars();
         // set the listeners
         setListeners();
@@ -94,6 +81,9 @@ public class DetailActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
+    /**
+     * Initializes the variables
+     */
     public void initVars() {
         chart = binding.stockChart;
         theDate = binding.theDate;
@@ -112,7 +102,9 @@ public class DetailActivity extends AppCompatActivity {
         metainfo = StockDataUtil.getMetadata();
     }
 
-    // Set the text views with data of their respective name
+    /**
+     * Set the text view with data according to their respective names
+     */
     public void setTextViews() {
         // get from meta info list
         theDate.setText(String.format(getResources().getString(R.string.date), metainfo.get(1))); // date always at position 1
@@ -125,6 +117,9 @@ public class DetailActivity extends AppCompatActivity {
         close.setText(String.format(getResources().getString(R.string.closePrice), stockData.get(dateKeys.get(dateKeys.size() - 1)).getClose()));
     }
 
+    /**
+     * Update the text views
+     */
     public void updateTextViews() {
         dateAtPrice.setText(dateKeys.get(dateKeys.size() - 1));
         high.setText(String.format(getResources().getString(R.string.highPrice), stockData.get(dateKeys.get(dateKeys.size() - 1)).getHigh()));
@@ -133,6 +128,9 @@ public class DetailActivity extends AppCompatActivity {
         close.setText(String.format(getResources().getString(R.string.closePrice), stockData.get(dateKeys.get(dateKeys.size() - 1)).getClose()));
     }
 
+    /**
+     * Set the listeners
+     */
     public void setListeners() {
         daily.setOnClickListener(this::checked);
         weekly.setOnClickListener(this::checked);
@@ -160,66 +158,28 @@ public class DetailActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Check if what radio button is currently checked, fetch the data accordingly, and update the chart
+     * @param v
+     */
     public void checked(View v) {
         if (daily.isChecked()) {
             String newURL = String.format(StockDataUtil.getURL_V1(), metainfo.get(0));
             resetData();
-            /*StockDataUtil.fetchRawData(newURL, StockDataUtil.getTimeSeriesDaily());
-            while (true) {
-                if (StockDataUtil.getFetchDone()) {
-                    // set back to false
-                    StockDataUtil.setFetchNotDone();
-                    break;
-                }
-            }*/
             task = new FetchDataAsyncTask(this);
             task.execute(newURL, StockDataUtil.getTimeSeriesDaily());
-            /*stockData = StockDataUtil.getStockData();
-            dateKeys = StockDataUtil.getDateKeys2();
-            metainfo = StockDataUtil.getMetadata();
-            updateTextViews();
-            setUpChart();
-            chart.invalidate();*/
             return;
         } else if (weekly.isChecked()) {
             String newURL = String.format(StockDataUtil.getURL_V2(), metainfo.get(0));
             resetData();
-            /*StockDataUtil.fetchRawData(newURL, StockDataUtil.getTimeSeriesWeekly());
-            while (true) {
-                if (StockDataUtil.getFetchDone()) {
-                    // set back to false
-                    StockDataUtil.setFetchNotDone();
-                    break;
-                }
-            }*/
             task = new FetchDataAsyncTask(this);
             task.execute(newURL, StockDataUtil.getTimeSeriesWeekly());
-            /*stockData = StockDataUtil.getStockData();
-            dateKeys = StockDataUtil.getDateKeys2();
-            metainfo = StockDataUtil.getMetadata();
-            updateTextViews();
-            setUpChart();
-            chart.invalidate();*/
             return;
         } else if (monthly.isChecked()) {
             String newURL = String.format(StockDataUtil.getURL_V3(), metainfo.get(0));
             resetData();
-            /*StockDataUtil.fetchRawData(newURL, StockDataUtil.getTimesSeriesMonthly());
-            while (true) {
-                if (StockDataUtil.getFetchDone()) {
-                    // set back to false
-                    StockDataUtil.setFetchNotDone();
-                    break;
-                }
-            }*/
             task = new FetchDataAsyncTask(this);
             task.execute(newURL, StockDataUtil.getTimesSeriesMonthly());
-            /*stockData = StockDataUtil.getStockData();
-            dateKeys = StockDataUtil.getDateKeys2();
-            metainfo = StockDataUtil.getMetadata();
-            updateTextViews();
-            setUpChart();
-            chart.invalidate();*/
             return;
         }
     }
@@ -227,7 +187,6 @@ public class DetailActivity extends AppCompatActivity {
     /**
      * Configure the candlestick chart
      */
-    // (possible) args: date list, stock data in HashMap<Date(String,Stock)>
     public void setUpChart() {
         chart.setDoubleTapToZoomEnabled(false);
         chart.setPinchZoom(false); // for now
@@ -259,10 +218,12 @@ public class DetailActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * Generate the stock data for the chart
+     */
     public void generateData() {
         yValues = new ArrayList<>();
         for (int i = 0; i < stockData.size(); i++) {
-            // CandleEntry(x, high, low, open, close);
             yValues.add(new CandleEntry(i, Float.parseFloat(stockData.get(dateKeys.get(i)).getHigh())
                     , Float.parseFloat(stockData.get(dateKeys.get(i)).getLow())
                     , Float.parseFloat(stockData.get(dateKeys.get(i)).getOpen())
@@ -283,21 +244,22 @@ public class DetailActivity extends AppCompatActivity {
         data = new CandleData(set1);
     }
 
+    /**
+     * Add the stock to the watchlist
+     * @param v
+     */
     public void addToWatchlist(View v) {
         if (StockDataUtil.getWatchlistData().contains(metainfo.get(0))) {
-            Toast.makeText(this, metainfo.get(0) + " is already in watchlist!", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, metainfo.get(0) + " is already in watchlist!", Toast.LENGTH_SHORT).show();
             return;
         }
         StockDataUtil.getWatchlistData().add(metainfo.get(0));
         Toast.makeText(this, metainfo.get(0) + " added!", Toast.LENGTH_LONG).show();
-        /*if(StockDataUtil.getWatchlistData().contains(request)){
-            Toast.makeText(this,request + " is already in watchlist!", Toast.LENGTH_LONG).show();
-            return;
-        }
-        StockDataUtil.addWatchListData(request);
-        Toast.makeText(this, request + " added", Toast.LENGTH_LONG).show();*/
     }
 
+    /**
+     * Update the datasets
+     */
     public void updateData(){
         stockData = StockDataUtil.getStockData();
         dateKeys = StockDataUtil.getDateKeys2();
@@ -306,12 +268,18 @@ public class DetailActivity extends AppCompatActivity {
         setUpChart();
         chart.invalidate();
     }
+
+    /**
+     * Reset the datasets
+     */
     public void resetData() {
         chart.clearValues();
         StockDataUtil.clearDataSets();
-        //StockDataUtil.resetBooleans();
     }
 
+    /**
+     * AsyncTask class to fetch the stock data in the background
+     */
     private class FetchDataAsyncTask extends AsyncTask<String, Void, Void>{
         private Context context;
         private ProgressDialog pd;
@@ -322,36 +290,23 @@ public class DetailActivity extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
-            //System.out.println("In onPreExecute...");
             pd = new ProgressDialog(context);
             pd.setTitle("Loading Data");
             pd.setMessage("Please Wait...");
-            pd.setButton(ProgressDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    dialogInterface.cancel();
-                    cancel(true);
-                }
-            });
             pd.show();
         }
 
         @Override
         protected Void doInBackground(String... strings) {
-            //System.out.println("In doInBackground...");
             String urlVersion = strings[0];
             String type = strings[1];
-            System.out.println("The Request: " + urlVersion + "Type: " + type);
             if(type.equals(StockDataUtil.getTimeSeriesDaily())){
-                //request = String.format(StockDataUtil.getURL_V1(), StockDataUtil.getMetadata().get(0));
                 StockDataUtil.fetchRawData(urlVersion, type);
             }
             else if(type.equals(StockDataUtil.getTimeSeriesWeekly())){
-                //request = String.format(StockDataUtil.getURL_V2(), StockDataUtil.getMetadata().get(0));
                 StockDataUtil.fetchRawData(urlVersion, type);
             }
             else if(type.equals(StockDataUtil.getTimesSeriesMonthly())){
-                //request = String.format(StockDataUtil.getURL_V3(), StockDataUtil.getMetadata().get(0));
                 StockDataUtil.fetchRawData(urlVersion, type);
             }
             return null;
@@ -360,7 +315,6 @@ public class DetailActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void v) {
             super.onPostExecute(v);
-            //System.out.println("In onPostExecute...");
             while(true){
                 if(StockDataUtil.getFetchDone()){
                     // set back to false

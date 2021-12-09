@@ -1,6 +1,5 @@
 package edu.sjsu.android.stockmanagerproto3;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -68,11 +67,13 @@ public class WatchListFragment extends Fragment {
         goToDetail(view, ticker);
     }
 
+    /**
+     * Fetch data in background, then go to detail activity
+     * @param v
+     * @param stock
+     */
     public void goToDetail(View v, String stock){
         String request = String.format(StockDataUtil.getURL_V1(), stock);
-        /*Intent toDetailAct = new Intent(getContext(), DetailActivity.class);
-        toDetailAct.putExtra("url", request);
-        getContext().startActivity(toDetailAct);*/
         MyAsyncTask task = new MyAsyncTask(getContext());
         task.execute(request);
     }

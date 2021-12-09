@@ -3,12 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/homeOp"
-        android:icon="@drawable/ic_home"
-        app:showAsAction="always"
-        android:title="back"
-        />
-    <item
         android:id="@+id/watchlistOp"
         android:icon="@drawable/ic_watch"
         app:showAsAction="always"

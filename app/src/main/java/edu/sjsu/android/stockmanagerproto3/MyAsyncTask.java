@@ -20,25 +20,15 @@ public class MyAsyncTask extends AsyncTask<String, Void, Void> {
 
     @Override
     protected void onPreExecute() {
-        //System.out.println("In onPreExecute...");
         pd = new ProgressDialog(context);
         pd.setTitle("Loading Data");
         pd.setMessage("Please Wait...");
-        pd.setButton(ProgressDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.cancel();
-                cancel(true);
-            }
-        });
         pd.show();
     }
 
     @Override
     protected Void doInBackground(String... strings) {
-        //System.out.println("In doInBackground...");
         String request = strings[0];
-        //System.out.println("The Request: " + request);
         StockDataUtil.fetchRawDataInit(request);
         return null;
     }
@@ -46,12 +36,8 @@ public class MyAsyncTask extends AsyncTask<String, Void, Void> {
     @Override
     protected void onPostExecute(Void v) {
         super.onPostExecute(v);
-        //System.out.println("In onPostExecute...");
-        //System.out.println("In onPostExecute... Operation done? : " + StockDataUtil.getFetchDone());
         while(true){
             if(StockDataUtil.getFetchDone()){
-                // set back to false
-                //System.out.println("In lopp of onPostExecute... Operation done? : " + StockDataUtil.getFetchDone());
                 StockDataUtil.setFetchNotDone();
                 break;
             }
