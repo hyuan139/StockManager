@@ -29,7 +29,6 @@ public class WatchListAdapter extends RecyclerView.Adapter<WatchListAdapter.View
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         stock = mValues.get(position);
-        System.out.println("Position: " + position + " Stock: " + stock);
         holder.stock.setText(stock);
     }
 
