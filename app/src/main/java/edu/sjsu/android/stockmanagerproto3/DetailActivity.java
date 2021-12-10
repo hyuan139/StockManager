@@ -189,7 +189,7 @@ public class DetailActivity extends AppCompatActivity {
      */
     public void setUpChart() {
         chart.setDoubleTapToZoomEnabled(false);
-        chart.setPinchZoom(false); // for now
+        chart.setPinchZoom(true); // for now
         chart.setDrawBorders(true);
         chart.setBorderColor(getResources().getColor(R.color.teal_700));
         chart.setBackgroundColor(getResources().getColor(R.color.black));
@@ -232,13 +232,13 @@ public class DetailActivity extends AppCompatActivity {
 
         CandleDataSet set1 = new CandleDataSet(yValues, "DataSet 1");
         set1.setColor(Color.rgb(80, 80, 80));
-        set1.setShadowColor(getResources().getColor(R.color.teal_200));
+        set1.setShadowColor(getResources().getColor(R.color.lightGray));
         set1.setShadowWidth(0.8f);
         set1.setDecreasingColor(getResources().getColor(R.color.red));
         set1.setDecreasingPaintStyle(Paint.Style.FILL);
-        set1.setIncreasingColor(getResources().getColor(R.color.teal_700));
+        set1.setIncreasingColor(getResources().getColor(R.color.green));
         set1.setIncreasingPaintStyle(Paint.Style.FILL);
-        set1.setNeutralColor(Color.LTGRAY);
+        set1.setNeutralColor(getResources().getColor(R.color.ashGray));
         set1.setDrawValues(false);
 
         data = new CandleData(set1);
