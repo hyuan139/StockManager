@@ -18,7 +18,7 @@ import okhttp3.Response;
  * Utility methods to fetch and process stock data from AlphaVantage API
  */
 public class StockDataUtil {
-    private static final String KEY = "5ce41460d7msha29ff32aead49d9p1f6cc1jsnbf8b68a43226";
+    private static final String SECRET_API_KEY;
     private static final String TIME_SERIES_DAILY = "Time Series (Daily)";
     private static final String TIME_SERIES_WEEKLY = "Weekly Adjusted Time Series";
     private static final String TIMES_SERIES_MONTHLY = "Monthly Adjusted Time Series";
